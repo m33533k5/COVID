@@ -8,6 +8,9 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -19,11 +22,16 @@ public class GenerierungDiagram {
 	private NumberAxis yAchse;
 	private CategoryAxis xAchse;
 	
+	final ScrollBar sc = new ScrollBar();
+	
 	@SuppressWarnings({ "unchecked", "static-access" })
 	public GenerierungDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2,
 			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxJahr, VBox boxMonat, VBox boxLand, VBox boxBundeslaender, String nameMonat, int jahr, String nameLand) {
-
+		
 		Pane rootPane = new Pane();
+		ScrollPane scrollpane = new ScrollPane();
+		scrollpane.setHbarPolicy(ScrollBarPolicy.ALWAYS);
+		scrollpane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		Scene scene = null;
 		System.out.println(1);
 		
@@ -61,13 +69,13 @@ public class GenerierungDiagram {
 			chart.setLayoutY(20);
 			chart.setPrefWidth(1350);
 			chart.setPrefHeight(850);
-
-			rootPane.getChildren().addAll(boxRadio, boxJahr, boxMonat, boxLand, boxBundeslaender,
-					chart);
-
-			scene = new Scene(rootPane, 1600, 900);
 			
+			rootPane.getChildren().addAll(boxRadio, boxJahr, boxMonat, boxLand, boxBundeslaender,chart);
+			scrollpane.setContent(rootPane);
+			
+			scene = new Scene(scrollpane, 1600, 900);
 			primaryStage.setScene(scene);
+			
 			primaryStage.show();
 
 			// Ausgabe des Fehlers
