@@ -16,13 +16,22 @@ import javafx.stage.Stage;
 
 public class GenerierungDiagram {
 
+	private NumberAxis yAchse;
+	private CategoryAxis xAchse;
+	
 	@SuppressWarnings({ "unchecked", "static-access" })
 	public GenerierungDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2,
-			Series<String, Number> series3, CategoryAxis xAchse, NumberAxis yAchse, int switchChart, VBox boxRadio, VBox boxJahr, VBox boxMonat, VBox boxLand, VBox boxBundeslaender, String nameMonat, int jahr, String nameLand) {
+			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxJahr, VBox boxMonat, VBox boxLand, VBox boxBundeslaender, String nameMonat, int jahr, String nameLand) {
 
 		Pane rootPane = new Pane();
 		Scene scene = null;
 		System.out.println(1);
+		
+		// Achsen für die Diagramme
+		xAchse = new CategoryAxis();
+		yAchse = new NumberAxis();
+		xAchse.setLabel("Anzahl");
+		yAchse.setLabel("Tage");
 
 		try {
 			System.out.println(2);
@@ -41,7 +50,7 @@ public class GenerierungDiagram {
 			}
 
 			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			System.out.println(series1.getData());
+			System.out.println("Ehm" +series1.getData());
 			System.out.println(series2.getData());
 			System.out.println(series3.getData());
 

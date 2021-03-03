@@ -32,10 +32,6 @@ public class Main extends Application {
 	private ArrayList<Number> genesen = new ArrayList<Number>();
 	private ArrayList<Number> erkrankt = new ArrayList<Number>();
 
-	// Achsen für die Diagramme
-	private CategoryAxis xAchse = new CategoryAxis();
-	private NumberAxis yAchse = new NumberAxis();
-
 	Stage primaryStage;
 
 	// Wenn die Diagramart gewechselt wird, dann wird der Wechsel als Zahl gespeichert
@@ -121,13 +117,14 @@ public class Main extends Application {
     				System.out.println("Maximum: "+Math.toIntExact(diff_maximum));
     				System.out.println("Start:" +(meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_minimum)));
     				System.out.println("Ende: " + (meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_maximum)));
-    	    		for(int i = meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_maximum); i < meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_minimum); i++) {
+    				int ende = (meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_maximum));
+    	    		for(int i = meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_maximum); i <= meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_minimum); i++) {
     	    			if(diff_maximum > meineDaten.get(k).getInfizierte().size()) {
     	    				System.out.println("groeße: "+meineDaten.get(k).getInfizierte().size());
     	    	    		fehlermeldung(2);
     	    	    		break;
     	    			}else {
-	    					tage.add(Integer.toString((i+1)-Math.toIntExact(diff_minimum)));
+	    					tage.add(Integer.toString((i+1)-(meineDaten.get(k).getInfizierte().size()-Math.toIntExact(diff_maximum))));
 		        			erkrankt.add(meineDaten.get(k).getInfizierte().get(i));
 		        			genesen.add(meineDaten.get(k).getGeheilte().get(i));
 		        			tot.add(meineDaten.get(k).getTote().get(i));
@@ -136,6 +133,7 @@ public class Main extends Application {
     	    		//System.out.println(meineDaten.get(k).getInfizierte().get(i)+" "+meineDaten.get(k).getGeheilte().get(i)+ " "+meineDaten.get(k).getTote().get(i));
     			}
     		}
+    		
     		System.out.println(3);
     		Series<String, Number> datenGenesene = gdfd.generierungDatenDiagram("Genesen", tage, genesen);
     		System.out.println("fertig");
@@ -144,10 +142,8 @@ public class Main extends Application {
     		Series<String, Number> datenErkrankte = gdfd.generierungDatenDiagram("Erkrankt", tage, erkrankt);
     		System.out.println("fertig");
     		
-    		CategoryAxis xAchse1 = new CategoryAxis();
-    		NumberAxis yAchse1 = new NumberAxis();
     		GenerierungDiagram gd5 = new GenerierungDiagram(primaryStage, datenGestorbene, datenGenesene, datenErkrankte,
-    				xAchse1, yAchse1, wechselChart, boxRadio, boxJahr, boxMonat, boxLaender, boxBundeslaender, nameMonat, jahr, name);
+    				wechselChart, boxRadio, boxJahr, boxMonat, boxLaender, boxBundeslaender, nameMonat, jahr, name);
     		}else{
 	    		fehlermeldung(2);
     	}
@@ -281,6 +277,7 @@ public class Main extends Application {
 	        public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
 	          
 	        	nameMonat = newValue;
+	        	
 	        	/*
 	        	int monat2 = Integer.parseInt(choiceMonat.getSelectionModel().selectedIndexProperty().toString());
 	        	System.out.println(monat2);
@@ -298,7 +295,6 @@ public class Main extends Application {
 	        	if(newValue.equals("Oktober")) monat = 10;
 	        	if(newValue.equals("November")) monat = 11;
 	        	if(newValue.equals("Dezember")) monat = 12;
-	        	
 	        	
 	        	System.out.println("Monat: "+nameMonat);
         		System.out.println("Land: "+nameLand);
@@ -357,9 +353,6 @@ public class Main extends Application {
 		    	updateChart(meineDaten,name);
 		    }
 		}); 
-		
-		yAchse.setLabel("Anzahl");
-		xAchse.setLabel("Tage");
 
 		// Aufruf der Klasse, um die Liste mit Werten zu befüllen, die für Tage genutzt
 		// wird
@@ -382,7 +375,7 @@ public class Main extends Application {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		GenerierungDiagram gd = new GenerierungDiagram(primaryStage, datenErkrankte, datenGenesene, datenGestorbene,
-				xAchse, yAchse, 1, boxRadio, boxJahr, boxMonat, boxLaender, boxBundeslaender, nameMonat, jahr, "Mecklenburg Vorpommern");
+				1, boxRadio, boxJahr, boxMonat, boxLaender, boxBundeslaender, nameMonat, jahr, "Mecklenburg Vorpommern");
 	}
 
 	public static void main(String[] args) {
