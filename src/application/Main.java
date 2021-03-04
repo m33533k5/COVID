@@ -9,11 +9,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Orientation;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -21,7 +18,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
@@ -57,7 +53,7 @@ public class Main extends Application {
 	private VBox boxRadio = new VBox();
 	private VBox boxYear = new VBox();
 	private VBox boxMonth = new VBox();
-	private VBox boxCountry = new VBox();
+	private VBox boxCountrie = new VBox();
 	private VBox boxState = new VBox();
 
 	
@@ -113,16 +109,8 @@ public class Main extends Application {
     		System.out.println(1);
     		for(int k = 0; k < myData.size(); k++) {
     			if(name.equals(myData.get(k).getName())) {
-    				System.out.println("Test3: "+name);
-    				System.out.println("Test4: "+myData.get(k).getName());
-    				System.out.println("Minimum: "+Math.toIntExact(diffLastDay));
-    				System.out.println("Maximum: "+Math.toIntExact(diffFirstDay));
-    				System.out.println("Start:" +(myData.get(k).getInfected().size()-Math.toIntExact(diffLastDay)));
-    				System.out.println("Ende: " + (myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay)));
-    				int ende = (myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay));
     	    		for(int i = myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay); i <= myData.get(k).getInfected().size()-Math.toIntExact(diffLastDay); i++) {
     	    			if(diffFirstDay > myData.get(k).getInfected().size()) {
-    	    				System.out.println("groeße: "+myData.get(k).getInfected().size());
     	    	    		errorMessage(2);
     	    	    		break;
     	    			}else {
@@ -136,16 +124,12 @@ public class Main extends Application {
     			}
     		}
     		
-    		System.out.println(3);
     		Series<String, Number> dataHealed = gdfd.generateDataForDiagram("Genesen", days, healed);
-    		System.out.println("fertig");
     		Series<String, Number> dataDead = gdfd.generateDataForDiagram("Gestorben", days, dead);
-    		System.out.println("fertig");
     		Series<String, Number> dataInfected = gdfd.generateDataForDiagram("Erkrankt", days, infected);
-    		System.out.println("fertig");
     		
     		GenerateDiagram gd5 = new GenerateDiagram(primaryStage, dataDead, dataHealed, dataInfected,
-    				changeChart, boxRadio, boxYear, boxMonth, boxCountry, boxState, nameMonth, year, name);
+    				changeChart, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, name);
     		}else{
 	    		errorMessage(2);
     	}
@@ -187,7 +171,7 @@ public class Main extends Application {
 		ArrayList<CountrieObjects> myData = rd.getData();
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung der Radio Buttons
+		//Creating Radiobuttons
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		Label labelRadio = new Label("Diagramarten:");
 		labelRadio.setStyle("-fx-font-weight: bold;");
@@ -208,7 +192,7 @@ public class Main extends Application {
 		boxRadio.getChildren().addAll(labelRadio, buttonBarChart, buttonLineChart, buttonAreaChart);
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung der Liste für das Jahr
+		//Creating list year
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		Label choiceLabelYear = new Label("Jahr:");
 		ChoiceBox<Integer> choiceYear = new ChoiceBox<Integer>();
@@ -219,7 +203,7 @@ public class Main extends Application {
 		createBox(choiceLabelYear, boxYear, 8, 130, choiceYear, "Waehle das Jahr");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung der Liste für den Monat
+		//Creating list month
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		Label choiceLabelMonth = new Label("Monat:");
@@ -229,7 +213,7 @@ public class Main extends Application {
 		createBox(choiceLabelMonth, boxMonth, 100, 130, choiceMonth, "Waehle den Monat");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung der Liste für das Land
+		//Creating list countries
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		Label labelCountries = new Label("Land:");
@@ -241,10 +225,10 @@ public class Main extends Application {
 			}
 		}
 		createList(listCountries, 40, 215, 210, countries);
-		createBox(labelCountries, boxCountry, 8, 180, listCountries, "Waehle ein Land aus!");
+		createBox(labelCountries, boxCountrie, 8, 180, listCountries, "Waehle ein Land aus!");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung der Liste für Bundeslaender / Provinzen / Staaten
+		//Creating list state
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		Label labelState = new Label("Bundesland / Bundesstaat / Staat etc.:");
@@ -255,7 +239,7 @@ public class Main extends Application {
 		createBox(labelState, boxState, 8, 410, listState, "Waehle ein Bundesland aus!");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für das Listenfeld Jahr
+		//Creating listener for list year
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
 		
 		choiceYear.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -271,7 +255,7 @@ public class Main extends Application {
 	      });	
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für das Listenfeld Monat
+		//Creating listener for list month
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
 		
 		choiceMonth.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -309,7 +293,7 @@ public class Main extends Application {
 	      });	
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für das Bundesland / Bundesland / Staat
+		//Creating listener for list state
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		listState.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -319,12 +303,16 @@ public class Main extends Application {
 		        System.out.println("Test10: "+newValue);
 		        nameState = newValue;
 		        name = newValue;
+		        int index = listCountries.getFocusModel().getFocusedIndex();
+		        System.out.println(listCountries.getFocusModel().isFocused(index));
+		        listCountries.getFocusModel().focus(-1);
+		        System.out.println(listCountries.getFocusModel().isFocused(index));
 		        System.out.println("Name_Land: "+name);
 		    }
 		});
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für das Land
+		//Creating listener for list countries
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		listCountries.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -340,20 +328,25 @@ public class Main extends Application {
 		});
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für die RadioBox, um das Chart zu wechseln
+		//Creating listener for radiobutton
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 		
 		chartNumber.selectedToggleProperty().addListener((obserableValue, old_toggle, new_toggle) -> {
-		    if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
-		    	changeChart = 1;
-		    	updateChart(myData,name);
-		    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 2){
-		    	changeChart = 2;
-		    	updateChart(myData,name);
-		    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 3) {
-		    	changeChart = 3;
-		    	updateChart(myData,name);
-		    }
+			if(name == null) {
+				errorMessage(1);
+			}else {
+				if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
+			    	changeChart = 1;
+			    	updateChart(myData,name);
+			    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 2){
+			    	changeChart = 2;
+			    	updateChart(myData,name);
+			    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 3) {
+			    	changeChart = 3;
+			    	updateChart(myData,name);
+			    }
+			}
+		    
 		}); 
 
 		// Aufruf der Klasse, um die Liste mit Werten zu befüllen, die für Tage genutzt
@@ -377,7 +370,7 @@ public class Main extends Application {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		GenerateDiagram gd = new GenerateDiagram(primaryStage, dataInfected, dataHealed, dataDead,
-				1, boxRadio, boxYear, boxMonth, boxCountry, boxState, nameMonth, year, "Mecklenburg Vorpommern");
+				1, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, "Mecklenburg Vorpommern");
 	}
 
 	public static void main(String[] args) {

@@ -11,9 +11,6 @@ public class GenerateDataForDiagram {
 	// name = legend entry; Tag / day = the respective day in the month; Wert / values = numerical value
 	// for the respective day
 	public Series<String, Number> generateDataForDiagram(String name, ArrayList<String> day, ArrayList<Number> number) {
-		
-		System.out.println(day);
-		System.out.println(number);
 		XYChart.Series<String, Number> dataSeries = new XYChart.Series<String, Number>();
 		// set Legend entry for Diagram
 		dataSeries.setName(name);

@@ -34,7 +34,6 @@ public class GenerateDiagram {
 		scrollpane.setHbarPolicy(ScrollBarPolicy.ALWAYS);
 		scrollpane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		Scene scene = null;
-		System.out.println(1);
 		
 		// The axes are always reinitialized so that if the number of days changes, the formatting is adjusted.
 		xAxis = new CategoryAxis();
@@ -43,7 +42,6 @@ public class GenerateDiagram {
 		yAxis.setLabel("Tage");
 
 		try {
-			System.out.println(2);
 			XYChart<String, Number> chart = null;
 			switch (switchChart) {
 			case 1:
@@ -57,13 +55,7 @@ public class GenerateDiagram {
 				chart = new AreaChart<String, Number>(xAxis, yAxis);
 				break;
 			}
-
-			System.out.println(series1.getData());
-			System.out.println(series2.getData());
-			System.out.println(series3.getData());
-
-			chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountry);
-			
+			chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountry);		
 			chart.getData().addAll(series1, series2, series3);
 			chart.setLayoutX(225);
 			chart.setLayoutY(20);
