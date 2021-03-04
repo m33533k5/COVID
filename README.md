@@ -15,5 +15,3 @@ Gson from Google is required as an external library.
 * Add External JARs... 
 * path to your .jar
 * click on Apply 
-
-Auf Apply bestätigen und dann sollte das Projekt neugeladen werden.
