@@ -13,17 +13,18 @@ import com.google.gson.JsonParser;
 
 // Mit dieser Klasse wurden die Daten abgerufen und werden so verarbeitet, dass diese vom Program genutzt werden können
 
-public class RequestDaten {
+public class RequestData {
 
 	private static final String POSTS_API_URL = "https://interaktiv.morgenpost.de/data/corona/history.compact.json";
 	private static JsonArray arr;
 	
-	public ArrayList<LaenderObjekte> getData() throws IOException, InterruptedException {
+	public ArrayList<CountrieObjects> getData() throws IOException, InterruptedException {
 		arr = getRequestData();
+		//Here the maximum number of countries and states is stored. 
+		int maxNumberCountrys = getMaxNumberCountrys(arr);
 		
-		int maxAnzahlLaender = getMaxLaender(arr);
-		
-		for(int i = 0; i < maxAnzahlLaender; i++) {
+		//Data not needed for me will be removed from the file
+		for(int i = 0; i < maxNumberCountrys; i++) {
 			arr.get(i).getAsJsonArray().remove(13);
 			arr.get(i).getAsJsonArray().remove(9);
 			arr.get(i).getAsJsonArray().remove(8);
@@ -33,30 +34,34 @@ public class RequestDaten {
 			arr.get(i).getAsJsonArray().remove(4);
 		}
 		
-		int maxTage = getMaxTage(arr, maxAnzahlLaender);
+		//Which country has the most documented days?
+		//The number is used to normalize other countries. 
+		//For example: If China has 400 documented days and Germany has only 395, 
+		//then the first five days for Germany will be filled with a 0.
+		int maxDays = getMaxDays(arr, maxNumberCountrys);
 				
-		ArrayList<String> kuerzel = new ArrayList<String>();
+		ArrayList<String> identifier = new ArrayList<String>();
 		ArrayList<String> name = new ArrayList<String>();
-		ArrayList<String> parentKuerzel = new ArrayList<String>();
+		ArrayList<String> parentIdentifier = new ArrayList<String>();
 		
-		kuerzel = getListNamenKuerzel(arr, kuerzel, maxAnzahlLaender, 0, false);
-		name = getListNamenKuerzel(arr, name, maxAnzahlLaender, 2, false);
-		parentKuerzel = getListNamenKuerzel(arr, parentKuerzel, maxAnzahlLaender, 1, false);
+		identifier = getListNameIdentifier(arr, identifier, maxNumberCountrys, 0, false);
+		name = getListNameIdentifier(arr, name, maxNumberCountrys, 2, false);
+		parentIdentifier = getListNameIdentifier(arr, parentIdentifier, maxNumberCountrys, 1, false);
 		
-		ArrayList<ArrayList<Number>> listeInfizierte = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> werteInfizierte = new ArrayList<Number>();
-		ArrayList<ArrayList<Number>> listeGeheilte = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> werteGeheilte = new ArrayList<Number>();
-		ArrayList<ArrayList<Number>> listeTote = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> werteTote = new ArrayList<Number>();
+		ArrayList<ArrayList<Number>> listInfected = new ArrayList<ArrayList<Number>>();
+		ArrayList<Number> valuesInfected = new ArrayList<Number>();
+		ArrayList<ArrayList<Number>> listHealed = new ArrayList<ArrayList<Number>>();
+		ArrayList<Number> valuesHealed = new ArrayList<Number>();
+		ArrayList<ArrayList<Number>> listDead = new ArrayList<ArrayList<Number>>();
+		ArrayList<Number> valuesDead = new ArrayList<Number>();
 		
-		listeInfizierte = getListDaten(arr, listeInfizierte, werteInfizierte, maxAnzahlLaender, maxTage, 4);
-		listeGeheilte = getListDaten(arr, listeGeheilte, werteGeheilte, maxAnzahlLaender, maxTage, 5);
-		listeTote = getListDaten(arr, listeTote, werteTote, maxAnzahlLaender, maxTage, 6);		
+		listInfected = getListData(arr, listInfected, valuesInfected, maxNumberCountrys, maxDays, 4);
+		listHealed = getListData(arr, listHealed, valuesHealed, maxNumberCountrys, maxDays, 5);
+		listDead = getListData(arr, listDead, valuesDead, maxNumberCountrys, maxDays, 6);		
 		
-		ArrayList<LaenderObjekte> meineDaten = new ArrayList<LaenderObjekte>();
-		for(int i = 0; i < maxAnzahlLaender; i++) {
-			meineDaten.add(new LaenderObjekte(kuerzel.get(i).replaceAll("\"",""), parentKuerzel.get(i).replaceAll("\"",""), name.get(i).replaceAll("\"",""), listeInfizierte.get(i), listeGeheilte.get(i), listeTote.get(i)));
+		ArrayList<CountrieObjects> myData = new ArrayList<CountrieObjects>();
+		for(int i = 0; i < maxNumberCountrys; i++) {
+			myData.add(new CountrieObjects(identifier.get(i).replaceAll("\"",""), parentIdentifier.get(i).replaceAll("\"",""), name.get(i).replaceAll("\"",""), listInfected.get(i), listHealed.get(i), listDead.get(i)));
 		}
 		
 		/*
@@ -69,7 +74,7 @@ public class RequestDaten {
 		*/
 		//System.out.println(meineDaten.get(93).getInfizierte().size());
 		
-		return meineDaten;
+		return myData;
 	}
 	
 	private JsonArray getRequestData() throws IOException, InterruptedException {
@@ -88,50 +93,50 @@ public class RequestDaten {
 		return arr;
 	}
 	
-	private  ArrayList<String> getListNamenKuerzel (JsonArray array, ArrayList<String> liste, int anzahl, int position, boolean children){
-		for(int i = 0; i < anzahl;i++) {
+	private  ArrayList<String> getListNameIdentifier (JsonArray array, ArrayList<String> list, int number, int position, boolean children){
+		for(int i = 0; i < number;i++) {
 			if(array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == false) {
-				liste.add(array.get(i).getAsJsonArray().get(position).toString());
+				list.add(array.get(i).getAsJsonArray().get(position).toString());
 			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == true){
-				liste.add(array.get(i).getAsJsonArray().get(position).toString());
+				list.add(array.get(i).getAsJsonArray().get(position).toString());
 			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == false){
-				liste.add(array.get(i).getAsJsonArray().get(position).toString());
+				list.add(array.get(i).getAsJsonArray().get(position).toString());
 			}else {
-				liste.add("");
+				list.add("");
 			}
 		}
-		return liste;
+		return list;
 	}
 
-	private  ArrayList<ArrayList<Number>> getListDaten (JsonArray array, ArrayList<ArrayList<Number>> daten, ArrayList<Number> werte, int anzahlLaender, int anzahlTage, int position){
-		for(int i = 0; i < anzahlLaender; i++) {
-			werte = new ArrayList<Number>();
-			for(int k = 0; k < anzahlTage; k++) {
+	private  ArrayList<ArrayList<Number>> getListData (JsonArray array, ArrayList<ArrayList<Number>> data, ArrayList<Number> values, int numberOfCountries, int numberOfDays, int position){
+		for(int i = 0; i < numberOfCountries; i++) {
+			values = new ArrayList<Number>();
+			for(int k = 0; k < numberOfDays; k++) {
 				if(k < arr.get(i).getAsJsonArray().get(4).getAsJsonArray().size()) {
-					werte.add(k,Integer.parseInt(arr.get(i).getAsJsonArray().get(position).getAsJsonArray().get(k).toString()));
+					values.add(k,Integer.parseInt(arr.get(i).getAsJsonArray().get(position).getAsJsonArray().get(k).toString()));
 				}else {
-					werte.add(0,0);
+					values.add(0,0);
 				}
 			}
-			daten.add(i,werte);
+			data.add(i,values);
 		}
-		return daten;
+		return data;
 	}
 	
-	public int getMaxLaender(JsonArray array) {
+	public int getMaxNumberCountrys(JsonArray array) {
 		return array.size();
 	}
 	
-	public int getMaxTage(JsonArray array, int maxLaender) {
-		int maxTage = 0;
-		for(int i = 0; i < maxLaender;i++) {
-			if(maxTage < arr.get(i).getAsJsonArray().get(4).getAsJsonArray().size() ) maxTage = array.get(i).getAsJsonArray().get(4).getAsJsonArray().size();
+	public int getMaxDays(JsonArray array, int maxNumberOfCountries) {
+		int maxDay = 0;
+		for(int i = 0; i < maxNumberOfCountries;i++) {
+			if(maxDay < arr.get(i).getAsJsonArray().get(4).getAsJsonArray().size() ) maxDay = array.get(i).getAsJsonArray().get(4).getAsJsonArray().size();
 		}
-		return maxTage;
+		return maxDay;
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		RequestDaten rd = new RequestDaten();
+		RequestData rd = new RequestData();
 		rd.getData();
 	}
 }
