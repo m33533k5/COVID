@@ -1,13 +1,19 @@
-# COVID
+# COVID Data Visualisation
 
-Das Projekt läuft unter Java11:
-In Eclipse rechte Maustaste auf das Projekt 
--> Properties -> Java Compiler -> "Compiler compliance level: 11"
+Source of Data:
+https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
 
-Als externer Import wird Gson von Google benötigt. 
-Im selben Ordner wie die ReadMe ist auch die benötigte .jar Datei.
-In Eclipse rechte Maustaste auf das Projekt 
--> Properties -> Java Build Path -> Libaries -> "Add External JARs..." 
--> und dann die .jar Datei angeben. 
+This project requires the Java Compiler 11.
+* Properties 
+* Java Compiler 
+* Compiler compliance level: 11
+
+Gson from Google is required as an external library.
+* Properties 
+* Java Build Path 
+* Libaries 
+* Add External JARs... 
+* path to your .jar
+* click on Apply 
 
 Auf Apply bestätigen und dann sollte das Projekt neugeladen werden.
