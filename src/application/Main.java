@@ -76,7 +76,7 @@ public class Main extends Application {
 		return state;
 	}
 	
-	// Wenn änderungen der Daten passieren in dieser Methode
+	// Wenn aenderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
 		
 		System.out.println("Parameter: "+name);
@@ -334,7 +334,7 @@ public class Main extends Application {
 		    
 		}); 
 
-		// Aufruf der Klasse, um die Liste mit Werten zu befüllen, die für Tage genutzt
+		// Aufruf der Klasse, um die Liste mit Werten zu befÃ¼llen, die fÃ¼r Tage genutzt
 		// wird
 		ListFill lf = new ListFill();
 		
@@ -348,11 +348,7 @@ public class Main extends Application {
 		// Wird nachfolgend als Parameter verwendet
 		Series<String, Number> dataInfected = gdfd.generateDataForDiagram("Gestorben", days, infected);
 		Series<String, Number> dataHealed = gdfd.generateDataForDiagram("Genesen", days, healed);
-		Series<String, Number> dataDead = gdfd.generateDataForDiagram("Erkrankt", days, dead);
-		
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Erstellung des Listeners für den Radiobutton
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+		Series<String, Number> dataDead = gdfd.generateDataForDiagram("Erkrankt", days, dead);	
 		
 		GenerateDiagram gd = new GenerateDiagram(primaryStage, dataInfected, dataHealed, dataDead,
 				1, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, "Mecklenburg Vorpommern");
