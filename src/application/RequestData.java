@@ -1,14 +1,18 @@
 package application;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 // Mit dieser Klasse wurden die Daten abgerufen und werden so verarbeitet, dass diese vom Program genutzt werden können
@@ -78,6 +82,9 @@ public class RequestData {
 	}
 	
 	private JsonArray getRequestData() throws IOException, InterruptedException {
+		JsonArray arr = new JsonArray();
+		JsonArray arr2 = new JsonArray();
+		LocalDate dateToday = LocalDate.now();
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("accept", "asdasdasdasd/json")
 				.uri(URI.create(POSTS_API_URL)).build();
@@ -88,9 +95,31 @@ public class RequestData {
 		@SuppressWarnings("deprecation")
 		JsonElement el = parser.parse(response.body());
 
-		JsonArray arr = el.getAsJsonArray();
+		arr = el.getAsJsonArray();
+		FileWriter file = new FileWriter(dateToday+"_"+"jsonData.json");
 		
-		return arr;
+		try {
+			file.write(arr.toString());
+			System.out.println("Erfolgreich");
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		file.flush();
+		file.close();
+		
+		try {
+			Object obj = parser.parse(new FileReader(dateToday+"_"+"jsonData.json"));
+ 
+			JsonElement el2 = parser.parse(obj.toString());
+			arr2 = el2.getAsJsonArray();
+			System.out.println("Ich war hier");
+ 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return arr2;
 	}
 	
 	private  ArrayList<String> getListNameIdentifier (JsonArray array, ArrayList<String> list, int number, int position, boolean children){
