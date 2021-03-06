@@ -48,6 +48,7 @@ public class Main extends Application {
 	// Call the class to access the objects / methods.
 	RequestData rd = new RequestData();
 	GenerateDataForDiagram gdfd = new GenerateDataForDiagram();
+	ErrorMessage em = new ErrorMessage();
 	
 	// VBox for the Layout
 	private VBox boxRadio = new VBox();
@@ -75,22 +76,6 @@ public class Main extends Application {
 		return state;
 	}
 	
-	// Error messages are output via this method
-	private void errorMessage(int errorType) {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Warnung");
-		alert.setHeaderText("Vorsicht, ein Fehler ist aufgetreten!");
-		switch(errorType) {
-		case 1:
-			alert.setContentText("Sie haben kein Land ausgewaehlt.");
-			break;
-		case 2:
-			alert.setContentText("Fuer diesen Monat liegen noch nicht die Daten zur Verfuegung. Bitte den Monat aendern.");
-			break;
-		}
-		alert.showAndWait();
-	}
-	
 	// Wenn änderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
 		
@@ -111,7 +96,7 @@ public class Main extends Application {
     			if(name.equals(myData.get(k).getName())) {
     	    		for(int i = myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay); i <= myData.get(k).getInfected().size()-Math.toIntExact(diffLastDay); i++) {
     	    			if(diffFirstDay > myData.get(k).getInfected().size()) {
-    	    	    		errorMessage(2);
+    	    	    		em.errorMessage(2);
     	    	    		break;
     	    			}else {
 	    					days.add(Integer.toString((i+1)-(myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay))));
@@ -131,7 +116,7 @@ public class Main extends Application {
     		GenerateDiagram gd5 = new GenerateDiagram(primaryStage, dataDead, dataHealed, dataInfected,
     				changeChart, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, name);
     		}else{
-	    		errorMessage(2);
+	    		em.errorMessage(2);
     	}
 	}
 	
@@ -153,7 +138,7 @@ public class Main extends Application {
 	
 	private void checkCountrieState(String nameCountrie, String nameState, ArrayList<CountrieObjects> myData) {
 		if(nameState == null && nameCountrie == null) {
-			errorMessage(1);
+			em.errorMessage(1);
 		}else if(nameState == null) {
 			System.out.println("Versuch3");
 			updateChart(myData, nameCountrie);
@@ -333,7 +318,7 @@ public class Main extends Application {
 		
 		chartNumber.selectedToggleProperty().addListener((obserableValue, old_toggle, new_toggle) -> {
 			if(name == null) {
-				errorMessage(1);
+				em.errorMessage(1);
 			}else {
 				if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
 			    	changeChart = 1;

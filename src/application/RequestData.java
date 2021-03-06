@@ -81,45 +81,50 @@ public class RequestData {
 		return myData;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private JsonArray getRequestData() throws IOException, InterruptedException {
+		ErrorMessage em = new ErrorMessage();
 		JsonArray arr = new JsonArray();
-		JsonArray arr2 = new JsonArray();
-		LocalDate dateToday = LocalDate.now();
+		JsonElement el;
+		JsonParser parser = new JsonParser();
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().GET().header("accept", "asdasdasdasd/json")
 				.uri(URI.create(POSTS_API_URL)).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-		@SuppressWarnings("deprecation")
-		JsonParser parser = new JsonParser();
-		@SuppressWarnings("deprecation")
-		JsonElement el = parser.parse(response.body());
-
-		arr = el.getAsJsonArray();
-		FileWriter file = new FileWriter(dateToday+"_"+"jsonData.json");
-		
-		try {
-			file.write(arr.toString());
-			System.out.println("Erfolgreich");
-		}catch(IOException e) {
-			e.printStackTrace();
+		int statuscode = response.statusCode();
+		if(statuscode != 200) {	
+			try {
+				em.errorMessage(3);
+				Object obj = parser.parse(new FileReader("jsonData.json"));
+				JsonElement el2 = parser.parse(obj.toString());
+				arr = el2.getAsJsonArray();
+			} catch (Exception e) {
+				e.printStackTrace();
+				em.errorMessage(4);
+				System.exit(0);
+			}
+			return arr;
+		}else {
+			System.out.println(statuscode);
+			el = parser.parse(response.body());
+			arr = el.getAsJsonArray();
+			FileWriter file = new FileWriter("jsonData.json");
+			try {
+				file.write(arr.toString());
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			file.flush();
+			file.close();
+			try {
+				Object obj = parser.parse(new FileReader("jsonData.json"));
+				JsonElement el2 = parser.parse(obj.toString());
+				arr = el2.getAsJsonArray();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return arr;
 		}
-		
-		file.flush();
-		file.close();
-		
-		try {
-			Object obj = parser.parse(new FileReader(dateToday+"_"+"jsonData.json"));
- 
-			JsonElement el2 = parser.parse(obj.toString());
-			arr2 = el2.getAsJsonArray();
-			System.out.println("Ich war hier");
- 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return arr2;
 	}
 	
 	private  ArrayList<String> getListNameIdentifier (JsonArray array, ArrayList<String> list, int number, int position, boolean children){
