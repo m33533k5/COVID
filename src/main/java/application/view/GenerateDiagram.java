@@ -1,4 +1,4 @@
-package application;
+package application.view;
 
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
@@ -11,23 +11,27 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-// In this class the diagram is created.
-// The required data is passed from other classes as parameters.
+/**
+ * 
+ * @author Christian Wollmann <br/><br/>
+ * In this class the diagram is created.
+ * The required data is passed from other classes as parameters.
+ */
 
 public class GenerateDiagram {
 
 	private NumberAxis yAxis;
 	private CategoryAxis xAxis;
-	
 	final ScrollBar sc = new ScrollBar();
 	
 	@SuppressWarnings({ "unchecked", "static-access" })
 	public GenerateDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2,
-			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, VBox boxState, String nameMonth, int year, String nameCountry) {
+			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, VBox boxState, HBox boxButton, String nameMonth, int year, String nameCountries) {
 		
 		Pane rootPane = new Pane();
 		ScrollPane scrollpane = new ScrollPane();
@@ -55,14 +59,19 @@ public class GenerateDiagram {
 				chart = new AreaChart<String, Number>(xAxis, yAxis);
 				break;
 			}
-			chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountry);		
+			
+			if(nameMonth == null || nameCountries == null) {
+				chart.setTitle("");
+			}else {
+				chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountries);
+			}
 			chart.getData().addAll(series1, series2, series3);
 			chart.setLayoutX(225);
 			chart.setLayoutY(20);
 			chart.setPrefWidth(1350);
 			chart.setPrefHeight(850);
 			
-			rootPane.getChildren().addAll(boxRadio, boxYear, boxMonth, boxCountry, boxState, chart);
+			rootPane.getChildren().addAll(boxRadio, boxYear, boxMonth, boxCountry, boxState, boxButton, chart);
 			scrollpane.setContent(rootPane);
 			
 			scene = new Scene(scrollpane, 1600, 900);

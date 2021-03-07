@@ -1,4 +1,4 @@
-package application;
+package application.control;
 
 import java.io.File;
 import java.io.FileNotFoundException;

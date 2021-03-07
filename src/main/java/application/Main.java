@@ -3,47 +3,65 @@ package application;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import application.control.GenerateDataForDiagram;
+import application.control.ListFill;
+import application.control.RequestData;
+import application.control.Translation;
+import application.model.CalculateDifference;
+import application.model.CountrieObjects;
+import application.model.EnumMonth;
+import application.view.ErrorMessage;
+import application.view.GenerateDiagram;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class Main extends Application {
-
+	
+	//Main.class sagt, dass dieser logger in dieser klasse registriert ist
+	private static final Logger LOGGER = LogManager.getLogger(Main.class);
+	
 	// Lists to dynamically add the required data.
 	private ArrayList<String> days = new ArrayList<String>();
 	private ArrayList<Number> dead = new ArrayList<Number>();
 	private ArrayList<Number> healed = new ArrayList<Number>();
 	private ArrayList<Number> infected = new ArrayList<Number>();
 
-	Stage primaryStage;
+	private Stage primaryStage;
 
 	// If the diagram type is changed, then the change is saved as a number
-	private int changeChart = 1;
+	private int changeChart=-1;
 	
 	// Variables for the program
 	private int month = 12;
 	private int year = 2020;
 	private String nameCountrie;
 	private String nameState;
-	private String nameMonth = "Dezember";
+	private String nameMonth;
 	private String name;
-	private long diffFirstDay = 0;
-	private long diffLastDay = 0;
 	
 	// Call the class to access the objects / methods.
 	RequestData rd = new RequestData();
@@ -56,6 +74,7 @@ public class Main extends Application {
 	private VBox boxMonth = new VBox();
 	private VBox boxCountrie = new VBox();
 	private VBox boxState = new VBox();
+	private HBox boxButton = new HBox();
 
 	
 	// This method is responsible for displaying a state/province etc.
@@ -78,17 +97,16 @@ public class Main extends Application {
 	
 	// Wenn aenderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
-		
+	
 		System.out.println("Parameter: "+name);
 		
+		CalculateDifference bd = new CalculateDifference(month,year);
+		long diffFirstDay = bd.getDiffStart();
+		long diffLastDay = bd.getDiffEnd();
     	days = new ArrayList<String>();
     	dead = new ArrayList<Number>();
     	healed = new ArrayList<Number>();
     	infected = new ArrayList<Number>();
-		
-		CalculateDifference bd = new CalculateDifference(month,year);
-    	diffFirstDay = bd.getDiffAnfang();
-    	diffLastDay = bd.getDiffEnde();
 		
 		if(diffFirstDay > 0 || diffLastDay > 0) {
     		System.out.println(1);
@@ -114,7 +132,7 @@ public class Main extends Application {
     		Series<String, Number> dataInfected = gdfd.generateDataForDiagram("Erkrankt", days, infected);
     		
     		GenerateDiagram gd5 = new GenerateDiagram(primaryStage, dataDead, dataHealed, dataInfected,
-    				changeChart, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, name);
+    				changeChart, boxRadio, boxYear, boxMonth, boxCountrie, boxState, boxButton, nameMonth, year, name);
     		}else{
 	    		em.errorMessage(2);
     	}
@@ -140,10 +158,10 @@ public class Main extends Application {
 		if(nameState == null && nameCountrie == null) {
 			em.errorMessage(1);
 		}else if(nameState == null) {
-			System.out.println("Versuch3");
+			LOGGER.debug("Versuch3, nameCountrie={}", nameCountrie);
 			updateChart(myData, nameCountrie);
 		}else {
-			System.out.println("Versuch4");
+			LOGGER.debug("Versuch4, nameState={}", nameState);
 			updateChart(myData, nameState);
 		}
 	}
@@ -164,7 +182,6 @@ public class Main extends Application {
 		RadioButton buttonBarChart = new RadioButton("Balkendiagram");
 		buttonBarChart.setToggleGroup(chartNumber);
 		buttonBarChart.setUserData(1);
-		buttonBarChart.setSelected(true);
 		RadioButton buttonLineChart = new RadioButton("Liniendiagram");
 		buttonLineChart.setToggleGroup(chartNumber);
 		buttonLineChart.setUserData(2);
@@ -184,7 +201,6 @@ public class Main extends Application {
 		choiceYear.getItems().add(2019);
 		choiceYear.getItems().add(2020);
 		choiceYear.getItems().add(2021);
-		choiceYear.setValue(2020);
 		createBox(choiceLabelYear, boxYear, 8, 130, choiceYear, "Waehle das Jahr");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +210,6 @@ public class Main extends Application {
 		Label choiceLabelMonth = new Label("Monat:");
 		ChoiceBox<String> choiceMonth = new ChoiceBox<String>(FXCollections.observableArrayList("Januar", "Februar",
 				"Maerz", "April", "Mai", "Juni", "July", "August", "September", "Oktober", "November", "Dezember"));
-		choiceMonth.setValue("Dezember");
 		createBox(choiceLabelMonth, boxMonth, 100, 130, choiceMonth, "Waehle den Monat");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -216,12 +231,27 @@ public class Main extends Application {
 		//Creating list state
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
-		Label labelState = new Label("Bundesland / Bundesstaat / Staat etc.:");
+		//Label labelState = new Label("Bundesland / Bundesstaat / Staat etc.:");
+		Label labelState = new Label(Translation.translate("label.list.state"));
 		ListView<String> listState = new ListView<String>();
 		ObservableList<String> state = FXCollections.observableArrayList();	
 		state = showingState("Deutschland", myData);
     	createList(listState, 7, 200, 210, state);
 		createBox(labelState, boxState, 8, 410, listState, "Waehle ein Bundesland aus!");
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//Creating Buttons
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+		Button reload = new Button("Reload");
+		Button quit = new Button("Beenden");
+		reload.setLayoutX(25);
+		quit.setLayoutX(75);
+		reload.setLayoutY(100);
+		quit.setLayoutY(100);
+		boxButton.setLayoutX(75);
+		boxButton.setLayoutY(700);
+		boxButton.getChildren().addAll(reload, quit);
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for list year
@@ -234,8 +264,6 @@ public class Main extends Application {
 	        	
         		System.out.println("Test1: "+nameCountrie);
         		System.out.println("Test2: "+ myData.size());
-	        	
-        		checkCountrieState(nameCountrie, nameState, myData);
 	        }
 	      });	
 		
@@ -246,34 +274,52 @@ public class Main extends Application {
 		choiceMonth.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 	        @Override
 	        public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-	          
-	        	nameMonth = newValue;
-	        	
-	        	/*
-	        	int monat2 = Integer.parseInt(choiceMonat.getSelectionModel().selectedIndexProperty().toString());
-	        	System.out.println(monat2);
-	            */
-	        	
-	        	if(newValue.equals("Januar")) month = 1;
-	        	if(newValue.equals("Februar")) month = 2;      
-	        	if(newValue.equals("Maerz")) month = 3;
-	        	if(newValue.equals("April")) month = 4;
-	        	if(newValue.equals("Mai")) month = 5;
-	        	if(newValue.equals("Juni")) month = 6;
-	        	if(newValue.equals("July")) month = 7;
-	        	if(newValue.equals("August")) month = 8;
-	        	if(newValue.equals("September")) month = 9;
-	        	if(newValue.equals("Oktober")) month = 10;
-	        	if(newValue.equals("November")) month = 11;
-	        	if(newValue.equals("Dezember")) month = 12;
-	        	
+	        	nameMonth = newValue;      	        	
+	        	EnumMonth newMonth = EnumMonth.valueOf(newValue);      	        	
+	        	switch(newMonth) {
+	        	case Januar:
+	        		month = 1;
+	        		break;
+	        	case Februar:
+	        		month = 2;
+	        		break;
+	        	case März:
+	        		month = 3;
+	        		break;
+	        	case April:
+	        		month = 4;
+	        		break;
+	        	case Mai:
+	        		month = 5;
+	        		break;
+	        	case Juni:
+	        		month = 6;
+	        		break;
+	        	case July:
+	        		month = 7;
+	        		break;
+	        	case August:
+	        		month = 8;
+	        		break;
+	        	case September:
+	        		month = 9;
+	        		break;
+	        	case Oktober:
+	        		month = 10;
+	        		break;
+	        	case November:
+	        		month = 11;
+	        		break;
+	        	case Dezember:
+	        		month = 12;
+	        		break;
+	        	default:
+	        		em.errorMessage(6);
+	        	}
+
 	        	System.out.println("Monat: "+nameMonth);
         		System.out.println("Land: "+nameCountrie);
         		System.out.println("Daten: "+myData.size());
-	        	
-        		checkCountrieState(nameCountrie, nameState, myData);
-        		
-	        	System.out.println(diffFirstDay + " "+ diffLastDay);
 	        }
 	      });	
 		
@@ -288,11 +334,6 @@ public class Main extends Application {
 		        System.out.println("Test10: "+newValue);
 		        nameState = newValue;
 		        name = newValue;
-		        int index = listCountries.getFocusModel().getFocusedIndex();
-		        System.out.println(listCountries.getFocusModel().isFocused(index));
-		        listCountries.getFocusModel().focus(-1);
-		        System.out.println(listCountries.getFocusModel().isFocused(index));
-		        System.out.println("Name_Land: "+name);
 		    }
 		});
 		
@@ -317,44 +358,49 @@ public class Main extends Application {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 		
 		chartNumber.selectedToggleProperty().addListener((obserableValue, old_toggle, new_toggle) -> {
-			if(name == null) {
-				em.errorMessage(1);
-			}else {
-				if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
-			    	changeChart = 1;
-			    	updateChart(myData,name);
-			    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 2){
-			    	changeChart = 2;
-			    	updateChart(myData,name);
-			    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 3) {
-			    	changeChart = 3;
-			    	updateChart(myData,name);
-			    }
-			}
-		    
+			if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
+		    	changeChart = 1;
+		    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 2){
+		    	changeChart = 2;
+		    }else if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 3) {
+		    	changeChart = 3;
+		    }
 		}); 
-
-		// Aufruf der Klasse, um die Liste mit Werten zu befüllen, die für Tage genutzt
-		// wird
-		ListFill lf = new ListFill();
 		
-		days = lf.listFillString(days, 0);
-		dead = lf.listFillNumber(dead, 4);
-		healed = lf.listFillNumber(healed, 5);
-		infected = lf.listFillNumber(infected, 6);
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//Creating event handler for button quit
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 
-		// Anlegen einer Serie mit den jeweiligen Werten und dem Item dem sie zugeordnet
-		// werden
-		// Wird nachfolgend als Parameter verwendet
-		Series<String, Number> dataInfected = gdfd.generateDataForDiagram("Gestorben", days, infected);
-		Series<String, Number> dataHealed = gdfd.generateDataForDiagram("Genesen", days, healed);
-		Series<String, Number> dataDead = gdfd.generateDataForDiagram("Erkrankt", days, dead);	
+		EventHandler<ActionEvent> buttonHandlerQuit = new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		    	System.exit(0);
+		    }
+		};
 		
-		GenerateDiagram gd = new GenerateDiagram(primaryStage, dataInfected, dataHealed, dataDead,
-				1, boxRadio, boxYear, boxMonth, boxCountrie, boxState, nameMonth, year, "Mecklenburg Vorpommern");
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//Creating listener for button reload
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
+		EventHandler<ActionEvent> buttonHandlerReload = new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		    	if(changeChart < 0) {
+		    		em.errorMessage(5);
+		    	}else {
+		    		checkCountrieState(nameCountrie, nameState, myData);
+		    	}
+		    	
+		    }
+		};
+		
+		quit.setOnAction(buttonHandlerQuit);
+		reload.setOnAction(buttonHandlerReload);
+		
+		updateChart(myData, "Mecklenburg Vorpommern");
 	}
 
 	public static void main(String[] args) {
+		Translation.instance();
 		launch(args);
 	}
 }

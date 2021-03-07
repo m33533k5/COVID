@@ -1,15 +1,19 @@
-package application;
+package application.model;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 
-//With this class I calculated the difference between today's date and
-//the first and last day of the month which is selected in the program
-//I use these numbers in the program to pull out the digits for the dates
-//which should be displayed in the diagram
 
-public class CalculateDifference {
+/**
+ * 
+ * @author Christian <br/> <br/>
+ *With this class I calculated the difference between today's date and
+ *the first and last day of the month which is selected in the program
+ *I use these numbers in the program to pull out the digits for the dates
+ *which should be displayed in the diagram
+ */
+public class CalculateDifference implements InterfaceCalculateDifference{ 
 
 	private long diffFirstDay;
 	private long diffLastDay;
@@ -24,19 +28,19 @@ public class CalculateDifference {
 		setDiffLastDay(dateLastDay, dateToday);
 	}
 	
-	private void setDiffFirstDay(LocalDate anfang, LocalDate heute) {
-		diffFirstDay = ChronoUnit.DAYS.between(anfang, heute);
+	private void setDiffFirstDay(LocalDate start, LocalDate today) {
+		diffFirstDay = ChronoUnit.DAYS.between(start, today);
+	}
+
+	private void setDiffLastDay(LocalDate end, LocalDate today) {
+		diffLastDay = ChronoUnit.DAYS.between(end, today);
 	}
 	
-	private void setDiffLastDay(LocalDate ende, LocalDate heute) {
-		diffLastDay = ChronoUnit.DAYS.between(ende, heute);
-	}
-	
-	public long getDiffAnfang() {
+	public long getDiffStart() {
 		return diffFirstDay;
 	}
 	
-	public long getDiffEnde() {
+	public long getDiffEnd() {
 		return diffLastDay;
 	}
 	/*

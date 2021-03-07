@@ -1,4 +1,4 @@
-package application;
+package application.control;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,7 +15,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-// Mit dieser Klasse wurden die Daten abgerufen und werden so verarbeitet, dass diese vom Program genutzt werden können
+import application.model.CountrieObjects;
+import application.view.ErrorMessage;
+
+/**
+ * 
+ * @author Christian Wollmann <br/> <br/>
+ * With this class, the data was retrieved and is processed so that it can be used by the program.
+ */
 
 public class RequestData {
 
