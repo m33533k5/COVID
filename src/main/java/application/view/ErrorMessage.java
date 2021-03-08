@@ -9,29 +9,34 @@ import javafx.scene.control.Alert.AlertType;
  * 
  */
 
-public class ErrorMessage implements InterfaceErrorMessage{
+public abstract interface ErrorMessage {
 	
-	public void errorMessage(int errorType) {
+	public static void errorMessage(EnumErrorMessages errorType) {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Warnung");
 		alert.setHeaderText("Vorsicht, ein Fehler ist aufgetreten!");
 		switch(errorType) {
-		case 1:
-			alert.setContentText("Sie haben kein Land ausgewaehlt.");
+		case ERROR_LAND:
+			alert.setContentText(EnumErrorMessages.ERROR_LAND.get());
 			break;
-		case 2:
-			alert.setContentText("Fuer diesen Monat liegen noch nicht die Daten zur Verfuegung. Bitte den Monat oder das Jahr aendern.");
+		case ERROR_MONTH:
+			alert.setContentText(EnumErrorMessages.ERROR_MONTH.get());
 			break;
-		case 3:
-			alert.setContentText("Die aktuellen Daten konnten nicht von der Seite geladen werden. Es werden die lokallen Daten verwendet.");
+		case ERROR_DATA_LOAD_ONLINE:
+			alert.setContentText(EnumErrorMessages.ERROR_DATA_LOAD_ONLINE.get());
 			break;
-		case 4:
-			alert.setContentText("Die lokalen Daten konnten nicht geladen werden. Das Program wird beendet.");
+		case ERROR_DATA_LOAD_LOCAL:
+			alert.setContentText(EnumErrorMessages.ERROR_DATA_LOAD_LOCAL.get());
 			break;
-		case 5:
-			alert.setContentText("Es wurde kein Diagramtyp ausgewählt.");
-		case 6:
-			alert.setContentText("Es konnte kein Monat gefunden werden.");
+		case ERROR_DIAGRAM:
+			alert.setContentText(EnumErrorMessages.ERROR_DIAGRAM.get());
+			break;
+		case ERROR_MONTH_NOT_FOUND:
+			alert.setContentText(EnumErrorMessages.ERROR_MONTH_NOT_FOUND.get());
+			break;
+		default:
+			alert.setContentText(EnumErrorMessages.ERROR_UNKNOWN.get());
+			break;
 		}
 
 		alert.showAndWait();

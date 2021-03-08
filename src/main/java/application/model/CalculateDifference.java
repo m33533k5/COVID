@@ -43,11 +43,4 @@ public class CalculateDifference implements InterfaceCalculateDifference{
 	public long getDiffEnd() {
 		return diffLastDay;
 	}
-	/*
-	public static void main(String[] args) {
-		BerechnungDifferenz bd = new BerechnungDifferenz(5,2020);
-		System.out.println(bd.getDiffAnfang());
-		System.out.println(bd.getDiffEnde());
-	}
-	*/
 }

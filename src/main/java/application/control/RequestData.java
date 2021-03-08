@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import application.model.CountrieObjects;
+import application.view.EnumErrorMessages;
 import application.view.ErrorMessage;
 
 /**
@@ -90,7 +91,6 @@ public class RequestData {
 	
 	@SuppressWarnings("deprecation")
 	private JsonArray getRequestData() throws IOException, InterruptedException {
-		ErrorMessage em = new ErrorMessage();
 		JsonArray arr = new JsonArray();
 		JsonElement el;
 		JsonParser parser = new JsonParser();
@@ -101,13 +101,13 @@ public class RequestData {
 		int statuscode = response.statusCode();
 		if(statuscode != 200) {	
 			try {
-				em.errorMessage(3);
+				ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DATA_LOAD_ONLINE);
 				Object obj = parser.parse(new FileReader("jsonData.json"));
 				JsonElement el2 = parser.parse(obj.toString());
 				arr = el2.getAsJsonArray();
 			} catch (Exception e) {
 				e.printStackTrace();
-				em.errorMessage(4);
+				ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DATA_LOAD_LOCAL);
 				System.exit(0);
 			}
 			return arr;

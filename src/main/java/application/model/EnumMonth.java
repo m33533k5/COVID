@@ -6,6 +6,27 @@ package application.model;
  *
  */
 public enum EnumMonth {
+	
+	JANUARY("Januar"), 
+	FEBRUARY("Februar"), 
+	MARCH("März"), 
+	APRIL("April"), 
+	MAY("Mai"), 
+	JUNE("Juni"), 
+	JULY("July"), 
+	AUGUST("August"), 
+	SEPTEMBER("September"), 
+	OKTOBER("Oktober"), 
+	NOVEMBER("November"), 
+	DEZEMBER("Dezember");
 
-	Januar, Februar, März, April, Mai, Juni, July, August, September, Oktober, November, Dezember;
+	private final String value;
+
+	private EnumMonth(final String value) {
+		this.value = value;
+	}
+
+	public String get() {
+		return this.value;
+	}
 }
