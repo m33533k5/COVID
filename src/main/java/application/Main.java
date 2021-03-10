@@ -88,9 +88,9 @@ public class Main extends Application implements ErrorMessage{
 	
 	// Wenn aenderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
-	
-		System.out.println("Parameter: "+name);
 		
+		LOGGER.debug("Parameter = {}", name);
+	
 		CalculateDifference bd = new CalculateDifference(month,year);
 		long diffFirstDay = bd.getDiffStart();
 		long diffLastDay = bd.getDiffEnd();
@@ -100,7 +100,6 @@ public class Main extends Application implements ErrorMessage{
 		ArrayList<Number> infected = new ArrayList();
 		
 		if(diffFirstDay > 0 || diffLastDay > 0) {
-    		System.out.println(1);
     		for(int k = 0; k < myData.size(); k++) {
     			if(name.equals(myData.get(k).getName())) {
     	    		for(int i = myData.get(k).getInfected().size()-Math.toIntExact(diffFirstDay); i <= myData.get(k).getInfected().size()-Math.toIntExact(diffLastDay); i++) {
@@ -114,7 +113,6 @@ public class Main extends Application implements ErrorMessage{
 		        			dead.add(myData.get(k).getDead().get(i));
     	    			}
     	    		}
-    	    		//System.out.println(meineDaten.get(k).getInfizierte().get(i)+" "+meineDaten.get(k).getGeheilte().get(i)+ " "+meineDaten.get(k).getTote().get(i));
     			}
     		}
     		
@@ -137,9 +135,9 @@ public class Main extends Application implements ErrorMessage{
 		boxName.getChildren().addAll(labelName, objName);
 	}
 	
-	private void createList(ListView<String> listName, int scrollTo, int height, int width, ObservableList<String> OLName) {
-		Collections.sort(OLName);
-		listName.setItems(OLName);
+	private void createList(ListView<String> listName, int scrollTo, int height, int width, ObservableList<String> olName) {
+		Collections.sort(olName);
+		listName.setItems(olName);
 		listName.scrollTo(scrollTo);
 		listName.setPrefWidth(width);
 		listName.setPrefHeight(height);
@@ -208,9 +206,9 @@ public class Main extends Application implements ErrorMessage{
 				EnumMonth.JULY.get(),
 				EnumMonth.AUGUST.get(),
 				EnumMonth.SEPTEMBER.get(),
-				EnumMonth.OKTOBER.get(),
+				EnumMonth.OCTOBER.get(),
 				EnumMonth.NOVEMBER.get(),
-				EnumMonth.DEZEMBER.get()));
+				EnumMonth.DECEMBER.get()));
 		createBox(choiceLabelMonth, boxMonth, 100, 130, choiceMonth, "Waehle den Monat");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -232,11 +230,9 @@ public class Main extends Application implements ErrorMessage{
 		//Creating list state
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
-		//Label labelState = new Label("Bundesland / Bundesstaat / Staat etc.:");
 		Label labelState = new Label(Translation.translate("label.list.state"));
 		ListView<String> listState = new ListView();
-		ObservableList<String> state = FXCollections.observableArrayList();	
-		state = showingState("Deutschland", myData);
+		ObservableList<String> state = showingState("Deutschland", myData);
     	createList(listState, 7, 200, 210, state);
 		createBox(labelState, boxState, 8, 410, listState, "Waehle ein Bundesland aus!");
 		
@@ -258,78 +254,73 @@ public class Main extends Application implements ErrorMessage{
 		//Creating listener for list year
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
 		
-		choiceYear.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-	        public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-	        	System.out.println(choiceYear.getItems().get((Integer) newValue));
-	        	year = choiceYear.getItems().get((Integer) newValue);
-	        	
-        		System.out.println("Test1: "+nameCountrie);
-        		System.out.println("Test2: "+ myData.size());
-	        }
-	      });	
+		choiceYear.getSelectionModel().selectedIndexProperty().addListener((obserableValue, oldValue, newValue) ->{
+			LOGGER.debug("newValue={}", choiceYear.getItems().get((Integer) newValue));
+        	year = choiceYear.getItems().get((Integer) newValue);
+        	
+        	LOGGER.debug("Test1: {}", nameCountrie);
+        	LOGGER.debug("Test2: {}", myData.size());
+		});
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for list month
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
 		
-		choiceMonth.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-	        @Override
-	        public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-	        	nameMonth = newValue;      	        	
-	        	EnumMonth newMonth = EnumMonth.valueOf(newValue);      	        	
-	        	switch(newMonth) {
-	        	case JANUARY:
-	        		month = 1;
-	        		break;
-	        	case FEBRUARY:
-	        		month = 2;
-	        		break;
-	        	case MARCH:
-	        		month = 3;
-	        		break;
-	        	case APRIL:
-	        		month = 4;
-	        		break;
-	        	case MAY:
-	        		month = 5;
-	        		break;
-	        	case JUNE:
-	        		month = 6;
-	        		break;
-	        	case JULY:
-	        		month = 7;
-	        		break;
-	        	case AUGUST:
-	        		month = 8;
-	        		break;
-	        	case SEPTEMBER:
-	        		month = 9;
-	        		break;
-	        	case OKTOBER:
-	        		month = 10;
-	        		break;
-	        	case NOVEMBER:
-	        		month = 11;
-	        		break;
-	        	case DEZEMBER:
-	        		month = 12;
-	        		break;
-	        	default:
-	        		ErrorMessage.errorMessage(EnumErrorMessages.ERROR_MONTH_NOT_FOUND);
-	        	}
-
-	        	System.out.println("Monat: "+nameMonth);
-        		System.out.println("Land: "+nameCountrie);
-        		System.out.println("Daten: "+myData.size());
-	        }
-	      });	
+		choiceMonth.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) -> {	
+			nameMonth = newValue; 
+        	EnumMonth newMonth = EnumMonth.valueOf(EnumMonth.getEnumByString(newValue));
+        	LOGGER.debug("nameMonth:  {}", nameMonth);
+        	LOGGER.debug("newMonth:  {}", newMonth);
+        	LOGGER.debug("Land:: {}", nameCountrie);
+        	LOGGER.debug("Daten: {}", myData.size());
+        	switch(newMonth) {
+        	case JANUARY:
+        		month = 1;
+        		break;
+        	case FEBRUARY:
+        		month = 2;
+        		break;
+        	case MARCH:
+        		month = 3;
+        		break;
+        	case APRIL:
+        		month = 4;
+        		break;
+        	case MAY:
+        		month = 5;
+        		break;
+        	case JUNE:
+        		month = 6;
+        		break;
+        	case JULY:
+        		month = 7;
+        		break;
+        	case AUGUST:
+        		month = 8;
+        		break;
+        	case SEPTEMBER:
+        		month = 9;
+        		break;
+        	case OCTOBER:
+        		month = 10;
+        		break;
+        	case NOVEMBER:
+        		month = 11;
+        		break;
+        	case DECEMBER:
+        		month = 12;
+        		break;
+        	default:
+        		ErrorMessage.errorMessage(EnumErrorMessages.ERROR_MONTH_NOT_FOUND);
+        	}
+      });	
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for list state
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		listState.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) ->{
-			System.out.println("Test10: "+newValue);
+			LOGGER.debug("Test10:  {}", newValue);
 	        nameState = newValue;
 	        name = newValue;
 		});
@@ -339,10 +330,10 @@ public class Main extends Application implements ErrorMessage{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		
 		listCountries.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) ->{
-			System.out.println("Test9: "+newValue);
+			LOGGER.debug("Test9:  {}", newValue);
 	        nameCountrie = newValue;
 	        name= newValue;
-	        System.out.println("Name_Bundesland: "+name);
+	        LOGGER.debug("Name_Bundesland:  {}", name);
     		listState.setItems(showingState(nameCountrie,myData));
 		});
 		

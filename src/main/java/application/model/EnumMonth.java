@@ -16,11 +16,11 @@ public enum EnumMonth {
 	JULY("July"), 
 	AUGUST("August"), 
 	SEPTEMBER("September"), 
-	OKTOBER("Oktober"), 
+	OCTOBER("Oktober"), 
 	NOVEMBER("November"), 
-	DEZEMBER("Dezember");
+	DECEMBER("Dezember");
 
-	private final String value;
+	private String value;
 
 	private EnumMonth(final String value) {
 		this.value = value;
@@ -28,5 +28,13 @@ public enum EnumMonth {
 
 	public String get() {
 		return this.value;
+	}
+	
+	public static String getEnumByString(String code) {
+		for(EnumMonth em : EnumMonth.values()) {
+			if(em.get().equals(code)) 
+				return em.name();
+		}
+		return null;
 	}
 }
