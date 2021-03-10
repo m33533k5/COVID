@@ -2,8 +2,8 @@ package application.model;
 
 /**
  * 
- * @author Christian Wollmann
- *
+ * @author Christian Wollmann <br/><br/>
+ *Constants used for the output and processing of the months.
  */
 public enum EnumMonth {
 	

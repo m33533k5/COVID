@@ -1,6 +1,7 @@
 package application.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -26,17 +27,17 @@ public interface InterfaceCountrieObjects {
 	 * You get back the List of infected people for the respective object, as a ArrayList(Number).
 	 * @return
 	 */
-	public ArrayList<Number> getInfected();
+	public List<Number> getInfected();
 	
 	/**
 	 *  * You get back the List of healed people for the respective object, as a ArrayList(Number).
 	 * @return
 	 */
-	public ArrayList<Number> getHealed();
+	public List<Number> getHealed();
 	
 	/**
 	 *  * You get back the List of dead people for the respective object, as a ArrayList(Number).
 	 * @return
 	 */
-	public ArrayList<Number> getDead();
+	public List<Number> getDead();
 }

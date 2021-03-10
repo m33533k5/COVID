@@ -3,6 +3,7 @@ package application;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,8 +18,6 @@ import application.view.EnumErrorMessages;
 import application.view.ErrorMessage;
 import application.view.GenerateDiagram;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -94,10 +93,10 @@ public class Main extends Application implements ErrorMessage{
 		CalculateDifference bd = new CalculateDifference(month,year);
 		long diffFirstDay = bd.getDiffStart();
 		long diffLastDay = bd.getDiffEnd();
-		ArrayList<String> days = new ArrayList();
-		ArrayList<Number> dead = new ArrayList();
-		ArrayList<Number> healed = new ArrayList();
-		ArrayList<Number> infected = new ArrayList();
+		List<String> days = new ArrayList();
+		List<Number> dead = new ArrayList();
+		List<Number> healed = new ArrayList();
+		List<Number> infected = new ArrayList();
 		
 		if(diffFirstDay > 0 || diffLastDay > 0) {
     		for(int k = 0; k < myData.size(); k++) {
@@ -354,15 +353,7 @@ public class Main extends Application implements ErrorMessage{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating event handler for button quit
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
-
-		/*
-		EventHandler<ActionEvent> buttonHandlerQuit = new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	System.exit(0);
-		    }
-		};
-		*/
+		
 		EventHandler<ActionEvent> buttonHandlerQuit = event -> System.exit(0);
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

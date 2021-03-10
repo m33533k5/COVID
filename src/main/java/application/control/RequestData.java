@@ -7,14 +7,16 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDate;
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import application.Main;
 import application.model.CountrieObjects;
 import application.view.EnumErrorMessages;
 import application.view.ErrorMessage;
@@ -28,7 +30,8 @@ import application.view.ErrorMessage;
 public class RequestData {
 
 	private static final String POSTS_API_URL = "https://interaktiv.morgenpost.de/data/corona/history.compact.json";
-	private static JsonArray arr;
+	private JsonArray arr;
+	private static final Logger LOGGER = LogManager.getLogger(RequestData.class);
 	
 	public ArrayList<CountrieObjects> getData() throws IOException, InterruptedException {
 		arr = getRequestData();
@@ -52,46 +55,36 @@ public class RequestData {
 		//then the first five days for Germany will be filled with a 0.
 		int maxDays = getMaxDays(arr, maxNumberCountrys);
 				
-		ArrayList<String> identifier = new ArrayList<String>();
-		ArrayList<String> name = new ArrayList<String>();
-		ArrayList<String> parentIdentifier = new ArrayList<String>();
+		ArrayList<String> identifier = new ArrayList<>();
+		ArrayList<String> name = new ArrayList<>();
+		ArrayList<String> parentIdentifier = new ArrayList<>();
 		
 		identifier = getListNameIdentifier(arr, identifier, maxNumberCountrys, 0, false);
 		name = getListNameIdentifier(arr, name, maxNumberCountrys, 2, false);
 		parentIdentifier = getListNameIdentifier(arr, parentIdentifier, maxNumberCountrys, 1, false);
 		
 		ArrayList<ArrayList<Number>> listInfected = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> valuesInfected = new ArrayList<Number>();
+		ArrayList<Number> valuesInfected = new ArrayList<>();
 		ArrayList<ArrayList<Number>> listHealed = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> valuesHealed = new ArrayList<Number>();
+		ArrayList<Number> valuesHealed = new ArrayList<>();
 		ArrayList<ArrayList<Number>> listDead = new ArrayList<ArrayList<Number>>();
-		ArrayList<Number> valuesDead = new ArrayList<Number>();
+		ArrayList<Number> valuesDead = new ArrayList<>();
 		
-		listInfected = getListData(arr, listInfected, valuesInfected, maxNumberCountrys, maxDays, 4);
-		listHealed = getListData(arr, listHealed, valuesHealed, maxNumberCountrys, maxDays, 5);
-		listDead = getListData(arr, listDead, valuesDead, maxNumberCountrys, maxDays, 6);		
+		listInfected = getListData(listInfected, valuesInfected, maxNumberCountrys, maxDays, 4);
+		listHealed = getListData(listHealed, valuesHealed, maxNumberCountrys, maxDays, 5);
+		listDead = getListData(listDead, valuesDead, maxNumberCountrys, maxDays, 6);		
 		
-		ArrayList<CountrieObjects> myData = new ArrayList<CountrieObjects>();
+		ArrayList<CountrieObjects> myData = new ArrayList<>();
 		for(int i = 0; i < maxNumberCountrys; i++) {
-			myData.add(new CountrieObjects(identifier.get(i).replaceAll("\"",""), parentIdentifier.get(i).replaceAll("\"",""), name.get(i).replaceAll("\"",""), listInfected.get(i), listHealed.get(i), listDead.get(i)));
+			myData.add(new CountrieObjects(identifier.get(i).replace("\"",""), parentIdentifier.get(i).replace("\"",""), name.get(i).replace("\"",""), listInfected.get(i), listHealed.get(i), listDead.get(i)));
 		}
-		
-		/*
-		System.out.println("Kuerzel:"+meineDaten.get(0).getKuerzel() +" parentKuerzel: "+ meineDaten.get(0).getParentKuerzel() +" Name: "+ meineDaten.get(0).getName() + meineDaten.get(0).getInfizierte());
-		System.out.println("Kuerzel:"+meineDaten.get(93).getKuerzel() +" parentKuerzel: "+ meineDaten.get(93).getParentKuerzel() +" Name: "+ meineDaten.get(93).getName() + meineDaten.get(93).getInfizierte());
-		System.out.println("Kuerzel:"+meineDaten.get(94).getKuerzel() +" parentKuerzel: "+ meineDaten.get(94).getParentKuerzel() +" Name: "+ meineDaten.get(94).getName() + meineDaten.get(94).getInfizierte());
-		System.out.println("Kuerzel:"+meineDaten.get(95).getKuerzel() +" parentKuerzel: "+ meineDaten.get(95).getParentKuerzel() +" Name: "+ meineDaten.get(95).getName() + meineDaten.get(95).getInfizierte());
-		System.out.println("Kuerzel:"+meineDaten.get(96).getKuerzel() +" parentKuerzel: "+ meineDaten.get(96).getParentKuerzel() +" Name: "+ meineDaten.get(96).getName() + meineDaten.get(96).getInfizierte());
-		System.out.println("Kuerzel:"+meineDaten.get(97).getKuerzel() +" parentKuerzel: "+ meineDaten.get(97).getParentKuerzel() +" Name: "+ meineDaten.get(97).getName() + meineDaten.get(97).getInfizierte());
-		*/
-		//System.out.println(meineDaten.get(93).getInfizierte().size());
 		
 		return myData;
 	}
 	
 	@SuppressWarnings("deprecation")
 	private JsonArray getRequestData() throws IOException, InterruptedException {
-		JsonArray arr = new JsonArray();
+		String fileURL = "jsonData.json";
 		JsonElement el;
 		JsonParser parser = new JsonParser();
 		HttpClient client = HttpClient.newHttpClient();
@@ -102,7 +95,7 @@ public class RequestData {
 		if(statuscode != 200) {	
 			try {
 				ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DATA_LOAD_ONLINE);
-				Object obj = parser.parse(new FileReader("jsonData.json"));
+				Object obj = parser.parse(new FileReader(fileURL));
 				JsonElement el2 = parser.parse(obj.toString());
 				arr = el2.getAsJsonArray();
 			} catch (Exception e) {
@@ -112,10 +105,10 @@ public class RequestData {
 			}
 			return arr;
 		}else {
-			System.out.println(statuscode);
+			LOGGER.debug("statuscode = {}", statuscode);
 			el = parser.parse(response.body());
 			arr = el.getAsJsonArray();
-			FileWriter file = new FileWriter("jsonData.json");
+			FileWriter file = new FileWriter(fileURL);
 			try {
 				file.write(arr.toString());
 			}catch(IOException e) {
@@ -123,8 +116,9 @@ public class RequestData {
 			}
 			file.flush();
 			file.close();
+			
 			try {
-				Object obj = parser.parse(new FileReader("jsonData.json"));
+				Object obj = parser.parse(new FileReader(fileURL));
 				JsonElement el2 = parser.parse(obj.toString());
 				arr = el2.getAsJsonArray();
 			} catch (Exception e) {
@@ -136,11 +130,11 @@ public class RequestData {
 	
 	private  ArrayList<String> getListNameIdentifier (JsonArray array, ArrayList<String> list, int number, int position, boolean children){
 		for(int i = 0; i < number;i++) {
-			if(array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == false) {
+			if(array.get(i).getAsJsonArray().get(1).toString().equals("0") && !children) {
 				list.add(array.get(i).getAsJsonArray().get(position).toString());
-			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == true){
+			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && children){
 				list.add(array.get(i).getAsJsonArray().get(position).toString());
-			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && children == false){
+			}else if(!array.get(i).getAsJsonArray().get(1).toString().equals("0") && !children){
 				list.add(array.get(i).getAsJsonArray().get(position).toString());
 			}else {
 				list.add("");
@@ -149,9 +143,9 @@ public class RequestData {
 		return list;
 	}
 
-	private  ArrayList<ArrayList<Number>> getListData (JsonArray array, ArrayList<ArrayList<Number>> data, ArrayList<Number> values, int numberOfCountries, int numberOfDays, int position){
+	private  ArrayList<ArrayList<Number>> getListData (ArrayList<ArrayList<Number>> data, ArrayList<Number> values, int numberOfCountries, int numberOfDays, int position){
 		for(int i = 0; i < numberOfCountries; i++) {
-			values = new ArrayList<Number>();
+			values = new ArrayList<>();
 			for(int k = 0; k < numberOfDays; k++) {
 				if(k < arr.get(i).getAsJsonArray().get(4).getAsJsonArray().size()) {
 					values.add(k,Integer.parseInt(arr.get(i).getAsJsonArray().get(position).getAsJsonArray().get(k).toString()));

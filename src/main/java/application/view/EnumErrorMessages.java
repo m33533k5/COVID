@@ -1,5 +1,11 @@
 package application.view;
 
+/**
+ * 
+ * @author Christian Wollmann <br/><br/>
+ *Constants used for the output and processing of the error messages.
+ */
+
 public enum EnumErrorMessages {
 
 	ERROR_LAND("Sie haben kein Land ausgewaehlt."), 
@@ -18,5 +24,13 @@ public enum EnumErrorMessages {
 
 	public String get() {
 		return this.value;
+	}
+	
+	public static String getEnumByString(String code) {
+		for(EnumErrorMessages erm : EnumErrorMessages.values()) {
+			if(erm.get().equals(code)) 
+				return erm.name();
+		}
+		return null;
 	}
 }

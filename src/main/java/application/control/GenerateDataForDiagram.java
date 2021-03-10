@@ -1,22 +1,28 @@
 package application.control;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
 public class GenerateDataForDiagram {
 
-	// Function for creating the data to be displayed in the diagram
-	// name = legend entry; Tag / day = the respective day in the month; Wert / values = numerical value
-	// for the respective day
-	public Series<String, Number> generateDataForDiagram(String name, ArrayList<String> day, ArrayList<Number> number) {
-		XYChart.Series<String, Number> dataSeries = new XYChart.Series<String, Number>();
+	/**
+	 * @author Christian Wollmann <br/> <br/>
+	 * Function for creating the data to be displayed in the diagram
+	 * @param name - legend entry
+	 * @param day - the respective day in the month
+	 * @param number - numerical value for the respective day
+	 * @return
+	 */
+
+	public Series<String, Number> generateDataForDiagram(String name, List<String> day, List<Number> number) {
+		XYChart.Series<String, Number> dataSeries = new XYChart.Series<>();
 		// set Legend entry for Diagram
 		dataSeries.setName(name);
 		// Loop to assign the values to the day and the corresponding values.
 		for (int i = 0; i < day.size(); i++) {
-			dataSeries.getData().add(new XYChart.Data<String, Number>(day.get(i), number.get(i)));
+			dataSeries.getData().add(new XYChart.Data<>(day.get(i), number.get(i)));
 		}
 		return dataSeries;
 

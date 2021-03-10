@@ -1,6 +1,7 @@
 package application.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -21,11 +22,11 @@ public class CountrieObjects implements InterfaceCountrieObjects{
 	private String identifier;
 	private String name;
 	private String parentIdentifier;
-	private ArrayList<Number> infected;
-	private ArrayList<Number> healed;
-	private ArrayList<Number> dead;
+	private List<Number> infected;
+	private List<Number> healed;
+	private List<Number> dead;
 
-	public CountrieObjects(String identifier, String parentIdentifier, String name, ArrayList<Number> infected, ArrayList<Number> healed, ArrayList<Number> dead) {
+	public CountrieObjects(String identifier, String parentIdentifier, String name, List<Number> infected, List<Number> healed, List<Number> dead) {
 		this.identifier = identifier;
 		this.parentIdentifier = parentIdentifier;
 		this.name = name;
@@ -46,15 +47,15 @@ public class CountrieObjects implements InterfaceCountrieObjects{
 		return name;
 	}
 	
-	public ArrayList<Number> getInfected() {
+	public List<Number> getInfected() {
 		return infected;
 	}
 	
-	public ArrayList<Number> getHealed() {
+	public List<Number> getHealed() {
 		return healed;
 	}
 	
-	public ArrayList<Number> getDead() {
+	public List<Number> getDead() {
 		return dead;
 	}
 }

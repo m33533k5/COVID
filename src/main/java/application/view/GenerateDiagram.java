@@ -8,7 +8,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
@@ -27,9 +26,8 @@ public class GenerateDiagram {
 
 	private NumberAxis yAxis;
 	private CategoryAxis xAxis;
-	final ScrollBar sc = new ScrollBar();
 	
-	@SuppressWarnings({ "unchecked", "static-access" })
+	@SuppressWarnings({ "unchecked" })
 	public GenerateDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2,
 			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, VBox boxState, HBox boxButton, String nameMonth, int year, String nameCountries) {
 		
@@ -49,14 +47,14 @@ public class GenerateDiagram {
 			XYChart<String, Number> chart = null;
 			switch (switchChart) {
 			case 1:
-				chart = new BarChart<String, Number>(xAxis, yAxis);
+				chart = new BarChart<>(xAxis, yAxis);
 				break;
 			case 2:
-				chart = new LineChart<String, Number>(xAxis, yAxis);
+				chart = new LineChart<>(xAxis, yAxis);
 				break;
 			case 3:
 			default:
-				chart = new AreaChart<String, Number>(xAxis, yAxis);
+				chart = new AreaChart<>(xAxis, yAxis);
 				break;
 			}
 			

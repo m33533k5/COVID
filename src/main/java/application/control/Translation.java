@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * 
- * @author Christian Wollmann
- *
+ * @author Christian Wollmann <br/><br/>
+ * The class is used to make a translation for the available languages.
  */
 
 public class Translation {

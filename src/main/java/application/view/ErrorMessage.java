@@ -6,7 +6,7 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * 
  * @author Christian Wollmann
- * 
+ * Class to output an error message that can be accessed by other classes.
  */
 
 public abstract interface ErrorMessage {
