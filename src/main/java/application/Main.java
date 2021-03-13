@@ -2,7 +2,6 @@ package application;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +18,6 @@ import application.view.ErrorMessage;
 import application.view.GenerateDiagram;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
@@ -28,10 +26,12 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -46,13 +46,13 @@ public class Main extends Application implements ErrorMessage{
 	// If the diagram type is changed, then the change is saved as a number
 	private int changeChart=-1;
 	
+	private String labelFont = "-fx-font-weight: bold;";
+	
 	// Variables for the program
 	private int month = 12;
 	private int year = 2020;
-	private String nameCountrie;
-	private String nameState;
+	private String nameCountries;
 	private String nameMonth;
-	private String name;
 	
 	// Call the class to access the objects / methods.
 	RequestData rd = new RequestData();
@@ -65,25 +65,6 @@ public class Main extends Application implements ErrorMessage{
 	private VBox boxCountrie = new VBox();
 	private VBox boxState = new VBox();
 	private HBox boxButton = new HBox();
-
-	
-	// This method is responsible for displaying a state/province etc.
-	// If it is present
-	private ObservableList<String> showingState(String countrie, ArrayList<CountrieObjects> data) {
-		ObservableList<String> state = FXCollections.observableArrayList();
-		for(int i = 0; i < data.size(); i++) {
-			if(countrie.equals(data.get(i).getName())) {
-				String identifier = data.get(i).getIdentifier();
-				for(int k = 0; k < data.size(); k++) {
-					if(identifier.equals(data.get(k).getParentIdentifier())) {
-						state.add(data.get(k).getName());
-					}
-				}
-			}
-		}
-		Collections.sort(state);
-		return state;
-	}
 	
 	// Wenn aenderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
@@ -127,32 +108,23 @@ public class Main extends Application implements ErrorMessage{
 	}
 	
 	private void createBox( Label labelName, VBox boxName, int xLayout, int yLayout, Node objName, String tooltipText) {
-		labelName.setStyle("-fx-font-weight: bold;");
+		labelName.setStyle(labelFont);
 		labelName.setTooltip(new Tooltip(tooltipText));
 		boxName.setLayoutX(xLayout);
 		boxName.setLayoutY(yLayout);
 		boxName.getChildren().addAll(labelName, objName);
 	}
 	
-	private void createList(ListView<String> listName, int scrollTo, int height, int width, ObservableList<String> olName) {
-		Collections.sort(olName);
-		listName.setItems(olName);
-		listName.scrollTo(scrollTo);
-		listName.setPrefWidth(width);
-		listName.setPrefHeight(height);
-	}
-	
-	private void checkCountrieState(String nameCountrie, String nameState, ArrayList<CountrieObjects> myData) {
-		if(nameState == null && nameCountrie == null) {
+	private void checkCountrieState(String nameCountries, ArrayList<CountrieObjects> myData) {
+		if(nameCountries == null) {
 			ErrorMessage.errorMessage(EnumErrorMessages.ERROR_LAND);
-		}else if(nameState == null) {
-			LOGGER.debug("Versuch3, nameCountrie={}", nameCountrie);
-			updateChart(myData, nameCountrie);
 		}else {
-			LOGGER.debug("Versuch4, nameState={}", nameState);
-			updateChart(myData, nameState);
+			LOGGER.debug("Versuch4, nameState={}", nameCountries);
+			updateChart(myData, nameCountries);
 		}
 	}
+	
+
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException, InterruptedException {
@@ -164,7 +136,7 @@ public class Main extends Application implements ErrorMessage{
 		//Creating Radiobuttons
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		Label labelRadio = new Label("Diagramarten:");
-		labelRadio.setStyle("-fx-font-weight: bold;");
+		labelRadio.setStyle(labelFont);
 		final ToggleGroup chartNumber = new ToggleGroup();
 		RadioButton buttonBarChart = new RadioButton("Balkendiagram");
 		buttonBarChart.setToggleGroup(chartNumber);
@@ -193,7 +165,6 @@ public class Main extends Application implements ErrorMessage{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating list month
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		
 		Label choiceLabelMonth = new Label("Monat:");
 		ChoiceBox<String> choiceMonth = new ChoiceBox(FXCollections.observableArrayList(
 				EnumMonth.JANUARY.get(), 
@@ -211,34 +182,36 @@ public class Main extends Application implements ErrorMessage{
 		createBox(choiceLabelMonth, boxMonth, 100, 130, choiceMonth, "Waehle den Monat");
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Creating list countries
+		//Creating tree countries
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		
-		Label labelCountries = new Label("Land:");
-		ListView<String> listCountries = new ListView();
-		ObservableList<String> countries = FXCollections.observableArrayList();		
+		Label labelCountries = new Label("Land:");	
+		TreeItem<String> rootItem = new TreeItem<>("Länder");
+		rootItem.setExpanded(true);
 		for(int i = 0; i < myData.size(); i++) {
 			if(myData.get(i).getParentIdentifier().equals("0")) {
-				countries.add(myData.get(i).getName());
+				TreeItem<String> item = new TreeItem<>(myData.get(i).getName());
+				rootItem.getChildren().add(item);
+				String identifier = myData.get(i).getIdentifier();
+				for(int k = 0; k < myData.size(); k++) {
+					if(identifier.equals(myData.get(k).getParentIdentifier())) {
+						TreeItem<String> item2 = new TreeItem<>(myData.get(k).getName());
+						item.getChildren().add(item2);
+					}
+				}
 			}
 		}
-		createList(listCountries, 40, 215, 210, countries);
-		createBox(labelCountries, boxCountrie, 8, 180, listCountries, "Waehle ein Land aus!");
+		TreeView<String> tree = new TreeView<>(rootItem);
+		labelCountries.setStyle(labelFont);
+		labelCountries.setTooltip(new Tooltip("Waehle ein Land aus!"));
 		
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Creating list state
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		
-		Label labelState = new Label(Translation.translate("label.list.state"));
-		ListView<String> listState = new ListView();
-		ObservableList<String> state = showingState("Deutschland", myData);
-    	createList(listState, 7, 200, 210, state);
-		createBox(labelState, boxState, 8, 410, listState, "Waehle ein Bundesland aus!");
+		boxCountrie.setLayoutX(8);
+		boxCountrie.setLayoutY(180);
+		boxCountrie.setPrefWidth(225);
+		boxCountrie.getChildren().addAll(labelCountries, tree);
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating Buttons
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		
 		Button reload = new Button("Reload");
 		Button quit = new Button("Beenden");
 		reload.setLayoutX(25);
@@ -251,26 +224,24 @@ public class Main extends Application implements ErrorMessage{
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for list year
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
-		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 		choiceYear.getSelectionModel().selectedIndexProperty().addListener((obserableValue, oldValue, newValue) ->{
 			LOGGER.debug("newValue={}", choiceYear.getItems().get((Integer) newValue));
         	year = choiceYear.getItems().get((Integer) newValue);
         	
-        	LOGGER.debug("Test1: {}", nameCountrie);
+        	LOGGER.debug("Test1: {}", nameCountries);
         	LOGGER.debug("Test2: {}", myData.size());
 		});
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for list month
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
-		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 		choiceMonth.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) -> {	
 			nameMonth = newValue; 
         	EnumMonth newMonth = EnumMonth.valueOf(EnumMonth.getEnumByString(newValue));
         	LOGGER.debug("nameMonth:  {}", nameMonth);
         	LOGGER.debug("newMonth:  {}", newMonth);
-        	LOGGER.debug("Land:: {}", nameCountrie);
+        	LOGGER.debug("Land:: {}", nameCountries);
         	LOGGER.debug("Daten: {}", myData.size());
         	switch(newMonth) {
         	case JANUARY:
@@ -315,31 +286,16 @@ public class Main extends Application implements ErrorMessage{
       });	
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Creating listener for list state
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
-		
-		listState.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) ->{
+		//Creating listener for tree items
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
+		tree.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) ->{
 			LOGGER.debug("Test10:  {}", newValue);
-	        nameState = newValue;
-	        name = newValue;
-		});
-		
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Creating listener for list countries
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
-		
-		listCountries.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) ->{
-			LOGGER.debug("Test9:  {}", newValue);
-	        nameCountrie = newValue;
-	        name= newValue;
-	        LOGGER.debug("Name_Bundesland:  {}", name);
-    		listState.setItems(showingState(nameCountrie,myData));
+	        nameCountries = newValue.getValue();
 		});
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for radiobutton
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
-		
 		chartNumber.selectedToggleProperty().addListener((obserableValue, oldToggle, newToggle) -> {
 			if(Integer.parseInt(chartNumber.getSelectedToggle().getUserData().toString()) == 1) {
 		    	changeChart = 1;
@@ -353,21 +309,18 @@ public class Main extends Application implements ErrorMessage{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating event handler for button quit
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
-		
 		EventHandler<ActionEvent> buttonHandlerQuit = event -> System.exit(0);
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Creating listener for button reload
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~			
-		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
 		EventHandler<ActionEvent> buttonHandlerReload = event -> {
 			if(changeChart < 0) {
 	    		ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DIAGRAM);
 	    	}else {
-	    		checkCountrieState(nameCountrie, nameState, myData);
+	    		checkCountrieState(nameCountries, myData);
 	    	}
 		};
-		
 		
 		quit.setOnAction(buttonHandlerQuit);
 		reload.setOnAction(buttonHandlerReload);

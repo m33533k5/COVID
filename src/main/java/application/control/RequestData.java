@@ -16,7 +16,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import application.Main;
 import application.model.CountrieObjects;
 import application.view.EnumErrorMessages;
 import application.view.ErrorMessage;
