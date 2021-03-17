@@ -1,4 +1,5 @@
 package application.model;
+import application.control.Translation;
 
 /**
  * 
@@ -7,18 +8,18 @@ package application.model;
  */
 public enum EnumMonth {
 	
-	JANUARY("Januar"), 
-	FEBRUARY("Februar"), 
-	MARCH("März"), 
-	APRIL("April"), 
-	MAY("Mai"), 
-	JUNE("Juni"), 
-	JULY("July"), 
-	AUGUST("August"), 
-	SEPTEMBER("September"), 
-	OCTOBER("Oktober"), 
-	NOVEMBER("November"), 
-	DECEMBER("Dezember");
+	JANUARY(Translation.translate("label.month.january")), 
+	FEBRUARY(Translation.translate("label.month.february")), 
+	MARCH(Translation.translate("label.month.march")), 
+	APRIL(Translation.translate("label.month.april")), 
+	MAY(Translation.translate("label.month.may")), 
+	JUNE(Translation.translate("label.month.june")), 
+	JULY(Translation.translate("label.month.july")), 
+	AUGUST(Translation.translate("label.month.august")), 
+	SEPTEMBER(Translation.translate("label.month.september")), 
+	OCTOBER(Translation.translate("label.month.october")), 
+	NOVEMBER(Translation.translate("label.month.november")), 
+	DECEMBER(Translation.translate("label.month.december"));
 
 	private String value;
 

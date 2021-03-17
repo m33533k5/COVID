@@ -1,5 +1,5 @@
 package application.view;
-
+import application.control.Translation;
 /**
  * 
  * @author Christian Wollmann <br/><br/>
@@ -8,13 +8,14 @@ package application.view;
 
 public enum EnumErrorMessages {
 
-	ERROR_LAND("Sie haben kein Land ausgewaehlt."), 
-	ERROR_MONTH("Fuer diesen Monat liegen noch nicht die Daten zur Verfuegung. Bitte den Monat oder das Jahr aendern."), 
-	ERROR_DATA_LOAD_ONLINE("Die aktuellen Daten konnten nicht von der Seite geladen werden. Es werden die lokallen Daten verwendet."), 
-	ERROR_DATA_LOAD_LOCAL("Die lokalen Daten konnten nicht geladen werden. Das Program wird beendet."), 
-	ERROR_DIAGRAM("Es wurde kein Diagramtyp ausgewählt."), 
-	ERROR_MONTH_NOT_FOUND("Es konnte kein Monat gefunden werden."),
-	ERROR_UNKNOWN("Unbekannter Fehler");
+	ERROR_LAND(Translation.translate("error.land.notFound")), 
+	ERROR_DATA_NOT_FOUND(Translation.translate("error.data.notFound")), 
+	ERROR_DATA_LOAD_ONLINE(Translation.translate("error.dataOnline.notFound")), 
+	ERROR_DATA_LOAD_LOCAL(Translation.translate("error.dataLocal.notFound")), 
+	ERROR_DIAGRAM_NOT_FOUND(Translation.translate("error.diagram.notFound")), 
+	ERROR_MONTH_NOT_FOUND(Translation.translate("error.month.notFound")),
+	ERROR_YEAR_NOT_FOUND(Translation.translate("error.year.notFound")),
+	ERROR_UNKNOWN(Translation.translate("error.unknown"));
 
 	private final String value;
 

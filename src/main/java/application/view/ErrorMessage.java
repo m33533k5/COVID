@@ -1,4 +1,5 @@
 package application.view;
+import application.control.Translation;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -13,29 +14,29 @@ public abstract interface ErrorMessage {
 	
 	public static void errorMessage(EnumErrorMessages errorType) {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Warnung");
-		alert.setHeaderText("Vorsicht, ein Fehler ist aufgetreten!");
+		alert.setTitle(Translation.translate("error.set.title"));
+		alert.setHeaderText(Translation.translate("error.set.header"));
 		switch(errorType) {
 		case ERROR_LAND:
-			alert.setContentText(EnumErrorMessages.ERROR_LAND.get());
+			alert.setContentText(Translation.translate("error.land.notFound"));
 			break;
-		case ERROR_MONTH:
-			alert.setContentText(EnumErrorMessages.ERROR_MONTH.get());
+		case ERROR_DATA_NOT_FOUND:
+			alert.setContentText(Translation.translate("error.data.notFound"));
 			break;
 		case ERROR_DATA_LOAD_ONLINE:
-			alert.setContentText(EnumErrorMessages.ERROR_DATA_LOAD_ONLINE.get());
+			alert.setContentText(Translation.translate("error.dataOnline.notFound"));
 			break;
 		case ERROR_DATA_LOAD_LOCAL:
-			alert.setContentText(EnumErrorMessages.ERROR_DATA_LOAD_LOCAL.get());
+			alert.setContentText(Translation.translate("error.dataLocal.notFound"));
 			break;
-		case ERROR_DIAGRAM:
-			alert.setContentText(EnumErrorMessages.ERROR_DIAGRAM.get());
+		case ERROR_DIAGRAM_NOT_FOUND:
+			alert.setContentText(Translation.translate("error.diagram.notFound"));
 			break;
 		case ERROR_MONTH_NOT_FOUND:
-			alert.setContentText(EnumErrorMessages.ERROR_MONTH_NOT_FOUND.get());
+			alert.setContentText(Translation.translate("error.month.notFound"));
 			break;
 		default:
-			alert.setContentText(EnumErrorMessages.ERROR_UNKNOWN.get());
+			alert.setContentText(Translation.translate("error.unknown"));
 			break;
 		}
 

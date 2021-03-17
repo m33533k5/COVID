@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 
+import application.view.EnumErrorMessages;
+import application.view.ErrorMessage;
+
 
 /**
  * 
@@ -19,13 +22,20 @@ public class CalculateDifference implements InterfaceCalculateDifference{
 	private long diffLastDay;
 	
 	public CalculateDifference(int monat, int jahr) {
-		
-		LocalDate dateToday = LocalDate.now();
-		LocalDate dateFirstDay = LocalDate.of(jahr, monat, 1);
-		LocalDate dateLastDay = YearMonth.of(jahr,monat).atEndOfMonth();
-		
-		setDiffFirstDay(dateFirstDay, dateToday);
-		setDiffLastDay(dateLastDay, dateToday);
+	
+		if(monat == 0) {
+			ErrorMessage.errorMessage(EnumErrorMessages.ERROR_MONTH_NOT_FOUND);
+		}else if(jahr == 0) {
+			ErrorMessage.errorMessage(EnumErrorMessages.ERROR_YEAR_NOT_FOUND);
+		}else {
+			LocalDate dateToday = LocalDate.now();
+			LocalDate dateFirstDay = LocalDate.of(jahr, monat, 1);
+			LocalDate dateLastDay = YearMonth.of(jahr,monat).atEndOfMonth();
+			
+			setDiffFirstDay(dateFirstDay, dateToday);
+			setDiffLastDay(dateLastDay, dateToday);
+		}
+
 	}
 	
 	private void setDiffFirstDay(LocalDate start, LocalDate today) {

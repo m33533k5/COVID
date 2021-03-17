@@ -1,6 +1,6 @@
 package application.view;
-import application.control.Translation;
 
+import application.control.Translation;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
@@ -16,27 +16,38 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
- * 
- * @author Christian Wollmann <br/><br/>
- * In this class the diagram is created.
- * The required data is passed from other classes as parameters.
- */
-
-public class GenerateDiagram {
-
-	private NumberAxis yAxis;
-	private CategoryAxis xAxis;
+public class GenerateWindow {
 	
-	@SuppressWarnings({ "unchecked" })
-	public GenerateDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2,
-			Series<String, Number> series3, int switchChart, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, HBox boxButton, HBox boxLanguage, String nameMonth, int year, String nameCountries) {
+	private Pane rootPane;
+	private ScrollPane scrollpane;
+	private Scene scene;
+	private CategoryAxis xAxis;
+	private NumberAxis yAxis;
+	
+	public void generateScene(Stage primaryStage, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, HBox boxButton, HBox boxLanguage) {
 		
-		Pane rootPane = new Pane();
-		ScrollPane scrollpane = new ScrollPane();
+		rootPane = new Pane();
+		scrollpane = new ScrollPane();
 		scrollpane.setHbarPolicy(ScrollBarPolicy.ALWAYS);
 		scrollpane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-		Scene scene = null;
+		scene = null;
+		
+		rootPane.getChildren().addAll(boxRadio, boxYear, boxMonth, boxCountry, boxButton, boxLanguage);
+		scrollpane.setContent(rootPane);
+		
+		scene = new Scene(scrollpane, 1600, 900);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	@SuppressWarnings({ "unchecked" })
+	public void generateDiagram(Stage primaryStage, Series<String, Number> series1, Series<String, Number> series2, Series<String, Number> series3, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, HBox boxButton, HBox boxLanguage, int switchChart, String nameMonth, int year, String nameCountries) {
+		
+		rootPane = new Pane();
+		scrollpane = new ScrollPane();
+		scrollpane.setHbarPolicy(ScrollBarPolicy.ALWAYS);
+		scrollpane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+		scene = null;
 		
 		// The axes are always reinitialized so that if the number of days changes, the formatting is adjusted.
 		xAxis = Translation.xAxisForKey("label.xAxis.number");
@@ -60,7 +71,7 @@ public class GenerateDiagram {
 			if(nameMonth == null || nameCountries == null) {
 				chart.setTitle("");
 			}else {
-				chart.setTitle(Translation.translate("label.chart.title")+" "+nameMonth+" "+year+" "+nameCountries);
+				chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountries);
 			}
 			chart.getData().addAll(series1, series2, series3);
 			chart.setLayoutX(225);
