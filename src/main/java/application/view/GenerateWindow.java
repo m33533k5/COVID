@@ -50,8 +50,8 @@ public class GenerateWindow {
 		scene = null;
 		
 		// The axes are always reinitialized so that if the number of days changes, the formatting is adjusted.
-		xAxis = Translation.xAxisForKey("label.xAxis.number");
-		yAxis = Translation.yAxisForKey("label.yAxis.day");
+		xAxis = Translation.xAxisForKey("label.xAxis.day");
+		yAxis = Translation.yAxisForKey("label.yAxis.number");
 
 		try {
 			XYChart<String, Number> chart = null;
