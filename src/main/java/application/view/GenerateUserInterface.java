@@ -1,5 +1,7 @@
 package application.view;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -8,9 +10,11 @@ import application.control.Translation;
 import application.model.CountrieObjects;
 import application.model.EnumMonth;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -26,7 +30,7 @@ public class GenerateUserInterface {
 
 	private VBox boxRadio;
 	private VBox boxYear;
-	private VBox boxMonth;
+	private VBox boxMonth = new VBox();
 	private VBox boxCountries;
 	private HBox boxButton;
 	private HBox boxLanguage;
@@ -34,8 +38,8 @@ public class GenerateUserInterface {
 	private RadioButton buttonLineChart;
 	private RadioButton buttonAreaChart;
 	private ToggleGroup chartNumber;
-	private ChoiceBox<Integer> choiceYear;
-	private ChoiceBox<String> choiceMonth;
+	private ComboBox<Integer> choiceYear;
+	private ComboBox<EnumMonth> choiceMonth = new ComboBox();
 	private TreeView<String> tree;
 	private Button reload;
 	private Button quit;
@@ -86,38 +90,55 @@ public class GenerateUserInterface {
 	}
 	
 	private void generateBoxYear(){
-		choiceYear = new ChoiceBox<>();
+		choiceYear = new ComboBox<>();
 		choiceYear.getItems().add(2019);
 		choiceYear.getItems().add(2020);
 		choiceYear.getItems().add(2021);
 		Label choiceLabelYear = Translation.labelForKey("label.list.year");
 		boxYear = new VBox();
-		createBox(choiceLabelYear, boxYear, 8, 130, choiceYear, Translation.translate("label.tooltip.chooseYear"));
+		createBox(choiceLabelYear, boxYear, 8, 130, choiceYear, Translation.get("label.tooltip.chooseYear"));
 	}
 	
-	private void generateBoxMonth() {
-		Label choiceLabelMonth = Translation.labelForKey("label.list.month");
-		choiceMonth = new ChoiceBox<>(FXCollections.observableArrayList(
-				Translation.translate("label.month.january"), 
-				Translation.translate("label.month.february"),
-				Translation.translate("label.month.march"),
-				Translation.translate("label.month.april"),
-				Translation.translate("label.month.may"),
-				Translation.translate("label.month.june"),
-				Translation.translate("label.month.july"),
-				Translation.translate("label.month.august"),
-				Translation.translate("label.month.september"),
-				Translation.translate("label.month.october"),
-				Translation.translate("label.month.november"),
-				Translation.translate("label.month.december")));
-		boxMonth = new VBox();
-		createBox(choiceLabelMonth, boxMonth, 100, 130, choiceMonth, Translation.translate("label.tooltip.chooseMonth"));
+	public void generateBoxMonth() {
+		ObservableList<EnumMonth> i = FXCollections.observableArrayList(
+				EnumMonth.JANUARY, 
+				EnumMonth.FEBRUARY,
+				EnumMonth.MARCH,
+				EnumMonth.APRIL,
+				EnumMonth.MAY,
+				EnumMonth.JUNE,
+				EnumMonth.JULY,
+				EnumMonth.AUGUST,
+				EnumMonth.SEPTEMBER,
+				EnumMonth.OCTOBER,
+				EnumMonth.NOVEMBER,
+				EnumMonth.DECEMBER);
+		choiceMonth = new ComboBox<>(i);
+		createBox(Translation.labelForKey("label.list.month"), boxMonth, 100, 130, choiceMonth, Translation.get("label.tooltip.chooseMonth"));
+	}
+	
+	public void updateBoxMonth() {
+		ObservableList<EnumMonth> i = FXCollections.observableArrayList(
+				EnumMonth.JANUARY, 
+				EnumMonth.FEBRUARY,
+				EnumMonth.MARCH,
+				EnumMonth.APRIL,
+				EnumMonth.MAY,
+				EnumMonth.JUNE,
+				EnumMonth.JULY,
+				EnumMonth.AUGUST,
+				EnumMonth.SEPTEMBER,
+				EnumMonth.OCTOBER,
+				EnumMonth.NOVEMBER,
+				EnumMonth.DECEMBER);
+		choiceMonth.setItems(i);
+		choiceMonth.show();
 	}
 	
 	private void generateTreeCountries() throws IOException, InterruptedException {
 		RequestData rd = new RequestData();
 		ArrayList<CountrieObjects> myData = rd.getData();
-		TreeItem<String> rootItem = new TreeItem<>(Translation.translate("label.tree.countries"));
+		TreeItem<String> rootItem = new TreeItem<>(Translation.get("label.tree.countries"));
 		rootItem.setExpanded(true);
 		for(int i = 0; i < myData.size(); i++) {
 			if(myData.get(i).getParentIdentifier().equals("0")) {
@@ -141,7 +162,7 @@ public class GenerateUserInterface {
 		labelCountries.setTooltip(Translation.tooltipForKey("label.tooltip.chooseCountrie"));
 		boxCountries = new VBox();
 		boxCountries.setLayoutX(8);
-		boxCountries.setLayoutY(180);
+		boxCountries.setLayoutY(225); //180
 		boxCountries.setPrefWidth(225);
 		boxCountries.getChildren().addAll(labelCountries, tree);
 	}
@@ -155,13 +176,13 @@ public class GenerateUserInterface {
 		boxButton.getChildren().addAll(reload, quit);
 	}
 	
-	private void generateButtonLanguage() {
+	private void generateButtonLanguage() throws FileNotFoundException {
 		de = new Button();
-		Image imgDe = new Image(getClass().getResource("/application/pictures/deFlag.png").toExternalForm());
+		Image imgDe = new Image(new FileInputStream("src\\main\\resources\\deFlag.png"));
 		ImageView ivDe = new ImageView(imgDe);
 		de.setGraphic(ivDe);
 		en = new Button();
-		Image imgEn = new Image(getClass().getResource("/application/pictures/enFlag.png").toExternalForm());
+		Image imgEn = new Image(new FileInputStream("src\\main\\resources\\enFlag.png"));
 		ImageView ivEn = new ImageView(imgEn);
 		en.setGraphic(ivEn);
 		boxLanguage = new HBox();
@@ -186,13 +207,21 @@ public class GenerateUserInterface {
 		return en;
 	}
 	
-	public ChoiceBox<Integer> getChoiceBoxYear(){
+	public ComboBox<Integer> getChoiceBoxYear(){
 		return choiceYear;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public ChoiceBox getChoiceBoxMonth() {
+	public ComboBox getChoiceBoxMonth() {
 		return choiceMonth;
+	}
+	
+	public VBox getBoxMonth() {
+		return boxMonth;
+	}
+	
+	public void setBoxMonth() {
+		createBox(Translation.labelForKey("label.list.month"), boxMonth, 100, 130, choiceMonth, Translation.get("label.tooltip.chooseMonth"));
 	}
 	
 	public HBox getBoxButton() {
@@ -218,10 +247,6 @@ public class GenerateUserInterface {
 	
 	public VBox getBoxYear() {
 		return boxYear;
-	}
-	
-	public VBox getBoxMonth() {
-		return boxMonth;
 	}
 	
 	public VBox getBoxCountries() {

@@ -21,8 +21,6 @@ public class GenerateWindow {
 	private Pane rootPane;
 	private ScrollPane scrollpane;
 	private Scene scene;
-	private CategoryAxis xAxis;
-	private NumberAxis yAxis;
 	
 	public void generateScene(Stage primaryStage, VBox boxRadio, VBox boxYear, VBox boxMonth, VBox boxCountry, HBox boxButton, HBox boxLanguage) {
 		
@@ -50,44 +48,36 @@ public class GenerateWindow {
 		scene = null;
 		
 		// The axes are always reinitialized so that if the number of days changes, the formatting is adjusted.
-		xAxis = Translation.xAxisForKey("label.xAxis.day");
-		yAxis = Translation.yAxisForKey("label.yAxis.number");
+		CategoryAxis xAxis = Translation.xAxisForKey("label.xAxis.day");
+		NumberAxis yAxis = Translation.yAxisForKey("label.yAxis.number");
 
-		try {
-			XYChart<String, Number> chart = null;
-			switch (switchChart) {
-			case 1:
-				chart = new BarChart<>(xAxis, yAxis);
-				break;
-			case 2:
-				chart = new LineChart<>(xAxis, yAxis);
-				break;
-			case 3:
-			default:
-				chart = new AreaChart<>(xAxis, yAxis);
-				break;
-			}
-			
-			if(nameMonth == null || nameCountries == null) {
-				chart.setTitle("");
-			}else {
-				chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountries);
-			}
-			chart.getData().addAll(series1, series2, series3);
-			chart.setLayoutX(225);
-			chart.setLayoutY(20);
-			chart.setPrefWidth(1350);
-			chart.setPrefHeight(850);
-			
-			rootPane.getChildren().addAll(boxRadio, boxYear, boxMonth, boxCountry, boxButton, boxLanguage, chart);
-			scrollpane.setContent(rootPane);
-			
-			scene = new Scene(scrollpane, 1600, 900);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		XYChart<String, Number> chart = null;
+		switch (switchChart) {
+		case 1:
+			chart = new BarChart<>(xAxis, yAxis);
+			break;
+		case 2:
+			chart = new LineChart<>(xAxis, yAxis);
+			break;
+		case 3:
+		default:
+			chart = new AreaChart<>(xAxis, yAxis);
+			break;
 		}
+		
+		chart = Translation.titleChart("label.chart.title", chart, nameMonth, year, nameCountries);
+		chart.setLayoutX(225);
+		chart.setLayoutY(20);
+		chart.setPrefWidth(1350);
+		chart.setPrefHeight(850);
+		chart.getData().addAll(series1, series2, series3);
+
+		rootPane.getChildren().addAll(boxRadio, boxYear, boxMonth, boxCountry, boxButton, boxLanguage, chart);
+		scrollpane.setContent(rootPane);
+		
+		scene = new Scene(scrollpane, 1600, 900);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
 	}
 }

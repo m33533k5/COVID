@@ -25,6 +25,5 @@ public class GenerateDataForDiagram {
 			dataSeries.getData().add(new XYChart.Data<>(day.get(i), number.get(i)));
 		}
 		return dataSeries;
-
 	}
 }

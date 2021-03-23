@@ -8,14 +8,14 @@ import application.control.Translation;
 
 public enum EnumErrorMessages {
 
-	ERROR_LAND(Translation.translate("error.land.notFound")), 
-	ERROR_DATA_NOT_FOUND(Translation.translate("error.data.notFound")), 
-	ERROR_DATA_LOAD_ONLINE(Translation.translate("error.dataOnline.notFound")), 
-	ERROR_DATA_LOAD_LOCAL(Translation.translate("error.dataLocal.notFound")), 
-	ERROR_DIAGRAM_NOT_FOUND(Translation.translate("error.diagram.notFound")), 
-	ERROR_MONTH_NOT_FOUND(Translation.translate("error.month.notFound")),
-	ERROR_YEAR_NOT_FOUND(Translation.translate("error.year.notFound")),
-	ERROR_UNKNOWN(Translation.translate("error.unknown"));
+	ERROR_LAND(Translation.get("error.land.notFound")), 
+	ERROR_DATA_NOT_FOUND(Translation.get("error.data.notFound")), 
+	ERROR_DATA_LOAD_ONLINE(Translation.get("error.dataOnline.notFound")), 
+	ERROR_DATA_LOAD_LOCAL(Translation.get("error.dataLocal.notFound")), 
+	ERROR_DIAGRAM_NOT_FOUND(Translation.get("error.diagram.notFound")), 
+	ERROR_MONTH_NOT_FOUND(Translation.get("error.month.notFound")),
+	ERROR_YEAR_NOT_FOUND(Translation.get("error.year.notFound")),
+	ERROR_UNKNOWN(Translation.get("error.unknown"));
 
 	private final String value;
 

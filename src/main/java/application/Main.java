@@ -28,6 +28,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.HBox;
@@ -54,12 +55,13 @@ public class Main extends Application implements ErrorMessage {
 	GenerateDataForDiagram gdfd = new GenerateDataForDiagram();
 	GenerateUserInterface gi = new GenerateUserInterface();
 	GenerateWindow gw = new GenerateWindow();
+	ComboBox choiceMonth;
 	
 	// Wenn aenderungen der Daten passieren in dieser Methode
 	private void updateChart(ArrayList<CountrieObjects> myData, String name) {
 
 		LOGGER.debug("Parameter = {}", name);
-
+		
 		CalculateDifference bd = new CalculateDifference(month, year);
 		long diffFirstDay = bd.getDiffStart();
 		long diffLastDay = bd.getDiffEnd();
@@ -88,11 +90,11 @@ public class Main extends Application implements ErrorMessage {
 			}
 
 			Series<String, Number> dataHealed = gdfd
-					.generateDataForDiagram(Translation.translate("label.series.healed"), days, healed);
-			Series<String, Number> dataDead = gdfd.generateDataForDiagram(Translation.translate("label.series.dead"),
-					days, dead);
+					.generateDataForDiagram(Translation.get("label.series.healed"), days, healed);
+			Series<String, Number> dataDead = gdfd
+					.generateDataForDiagram(Translation.get("label.series.dead"), days, dead);
 			Series<String, Number> dataInfected = gdfd
-					.generateDataForDiagram(Translation.translate("label.series.infected"), days, infected);
+					.generateDataForDiagram(Translation.get("label.series.infected"), days, infected);
 			
 			gw.generateDiagram(primaryStage, dataDead, dataHealed, dataInfected, gi.getBoxRadio(),
 					gi.getBoxYear(), gi.getBoxMonth(), gi.getBoxCountries(), gi.getBoxButton(), gi.getBoxLanguage(), changeChart, nameMonth, year, name);
@@ -112,11 +114,11 @@ public class Main extends Application implements ErrorMessage {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException, InterruptedException {
-
+		
 		this.primaryStage = primaryStage;
 		gi.generateUserInterface();
-		ChoiceBox choiceYear = gi.getChoiceBoxYear();
-		ChoiceBox choiceMonth = gi.getChoiceBoxMonth();
+		ComboBox choiceYear = gi.getChoiceBoxYear();
+		choiceMonth = gi.getChoiceBoxMonth();
 		TreeView<String> tree = gi.getTreeCountries();
 		ToggleGroup chartNumber = gi.getChartNumber();
 		ArrayList<CountrieObjects> myData = rd.getData();
@@ -124,7 +126,7 @@ public class Main extends Application implements ErrorMessage {
 		Button reload = gi.getButtonReload();
 		Button de = gi.getButtonDe();
 		Button en = gi.getButtonEn();
-
+		
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// Creating listener for list year
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,9 +139,8 @@ public class Main extends Application implements ErrorMessage {
 		// Creating listener for list month
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		choiceMonth.getSelectionModel().selectedItemProperty().addListener((obserableValue, oldValue, newValue) -> {
-			nameMonth = (String) newValue;
-			EnumMonth newMonth = EnumMonth.valueOf(EnumMonth.getEnumByString((String) newValue));
-			switch (newMonth) {
+			nameMonth = newValue.toString();
+			switch ((EnumMonth)newValue) {
 			case JANUARY:
 				month = 1;
 				break;
@@ -222,8 +223,8 @@ public class Main extends Application implements ErrorMessage {
 		// Creating event handler for button language de
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		EventHandler<ActionEvent> buttonHandlerLanguageDe = event -> {
-			Translation.setLanguage("de");
 			Translation.setLocale(Locale.GERMAN);
+			gi.updateBoxMonth();
 			if (changeChart < 0) {
 				ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DIAGRAM_NOT_FOUND);
 			} else {
@@ -235,8 +236,8 @@ public class Main extends Application implements ErrorMessage {
 		// Creating event handler for button language en
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		EventHandler<ActionEvent> buttonHandlerLanguageEn = event -> {
-			Translation.setLanguage("en");
 			Translation.setLocale(Locale.ENGLISH);
+			gi.updateBoxMonth();
 			if (changeChart < 0) {
 				ErrorMessage.errorMessage(EnumErrorMessages.ERROR_DIAGRAM_NOT_FOUND);
 			} else {
@@ -253,7 +254,7 @@ public class Main extends Application implements ErrorMessage {
 	}
 
 	public static void main(String[] args) {
-		Translation.instance();
+		Translation.init();
 		launch(args);
 	}
 }

@@ -60,7 +60,7 @@ public class GenerateDiagram {
 			if(nameMonth == null || nameCountries == null) {
 				chart.setTitle("");
 			}else {
-				chart.setTitle(Translation.translate("label.chart.title")+" "+nameMonth+" "+year+" "+nameCountries);
+				chart.setTitle("Daten "+nameMonth+" "+year+" "+nameCountries);
 			}
 			chart.getData().addAll(series1, series2, series3);
 			chart.setLayoutX(225);

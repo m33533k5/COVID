@@ -1,19 +1,12 @@
 package application.control;
 
-import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -21,6 +14,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -33,46 +27,6 @@ import javafx.scene.control.Tooltip;
  */
 
 public class Translation {
-	
-	private static final Logger LOGGER = LogManager.getLogger(Translation.class);
-	private static final Map<String, Properties> map;
-	private static String language;
-	static {
-		map = new HashMap<>();
-	}
-	
-	private Translation() {
-		
-		instance();
-	}
-	
-	public static final void instance() {
-		
-		setLanguage("en");
-		Properties propDE = new Properties();
-		Properties propEN = new Properties();
-		try {
-			propDE.load(new FileInputStream("src\\main\\resources\\translation_de.properties"));
-			propEN.load(new FileInputStream("src\\main\\resources\\translation_en.properties"));
-		}catch(Exception e) {
-			LOGGER.error("Konnte properties nicht laden", e);
-		}
-		map.put("de", propDE);
-		map.put("en", propEN);
-	}
-	
-	public static final String translate(String key) {
-
-		return map.get(language).getProperty(key, key);
-	}
-
-	public static String getLanguage() {
-		return language;
-	}
-
-	public static final void setLanguage(String lang) {
-		language = lang;
-	}
 	
 	private static final ObjectProperty<Locale> locale;
     static {
@@ -95,7 +49,7 @@ public class Translation {
      */
     public static Locale getDefaultLocale() {
         Locale sysDefault = Locale.getDefault();
-        return getSupportedLocales().contains(sysDefault) ? sysDefault : Locale.ENGLISH;
+        return getSupportedLocales().contains(sysDefault) ? sysDefault : Locale.GERMAN;
     }
     
     public static Locale getLocale() {
@@ -217,7 +171,7 @@ public class Translation {
      */
     public static NumberAxis yAxisForKey(final String key, final Object... args) {
     	NumberAxis yAxis = new NumberAxis();
-    	yAxis.setLabel(Translation.translate(key));
+    	yAxis.setLabel(Translation.get(key));
         return yAxis;
     }
     
@@ -232,8 +186,26 @@ public class Translation {
      */
     public static CategoryAxis xAxisForKey(final String key, final Object... args) {
     	CategoryAxis xAxis = new CategoryAxis();
-    	xAxis.setLabel(Translation.translate(key));
+    	xAxis.setLabel(Translation.get(key));
         return xAxis;
     }
     
+    /**
+     * 
+     * @param key
+     * 			ResourceBundle key
+     * @param chart
+     * @param nameMonth
+     * @param year
+     * @param nameCountries
+     * @return Label
+     */
+    public static XYChart titleChart(final String key, XYChart chart, String nameMonth, int year, String nameCountries) {
+    	chart.setTitle(Translation.get(key)+" "+nameMonth+" "+year+" "+nameCountries);
+    	return chart;
+    }
+	public static final void init() {
+		get("label.chart.title");
+	}
+
 }

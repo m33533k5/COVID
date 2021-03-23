@@ -14,29 +14,29 @@ public abstract interface ErrorMessage {
 	
 	public static void errorMessage(EnumErrorMessages errorType) {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle(Translation.translate("error.set.title"));
-		alert.setHeaderText(Translation.translate("error.set.header"));
+		alert.setTitle(Translation.get("error.set.title"));
+		alert.setHeaderText(Translation.get("error.set.header"));
 		switch(errorType) {
 		case ERROR_LAND:
-			alert.setContentText(Translation.translate("error.land.notFound"));
+			alert.setContentText(Translation.get("error.land.notFound"));
 			break;
 		case ERROR_DATA_NOT_FOUND:
-			alert.setContentText(Translation.translate("error.data.notFound"));
+			alert.setContentText(Translation.get("error.data.notFound"));
 			break;
 		case ERROR_DATA_LOAD_ONLINE:
-			alert.setContentText(Translation.translate("error.dataOnline.notFound"));
+			alert.setContentText(Translation.get("error.dataOnline.notFound"));
 			break;
 		case ERROR_DATA_LOAD_LOCAL:
-			alert.setContentText(Translation.translate("error.dataLocal.notFound"));
+			alert.setContentText(Translation.get("error.dataLocal.notFound"));
 			break;
 		case ERROR_DIAGRAM_NOT_FOUND:
-			alert.setContentText(Translation.translate("error.diagram.notFound"));
+			alert.setContentText(Translation.get("error.diagram.notFound"));
 			break;
 		case ERROR_MONTH_NOT_FOUND:
-			alert.setContentText(Translation.translate("error.month.notFound"));
+			alert.setContentText(Translation.get("error.month.notFound"));
 			break;
 		default:
-			alert.setContentText(Translation.translate("error.unknown"));
+			alert.setContentText(Translation.get("error.unknown"));
 			break;
 		}
 
