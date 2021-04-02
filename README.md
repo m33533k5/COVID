@@ -12,3 +12,4 @@ In our studies, we were supposed to find a project for the subject of applicatio
 
 This project shows you case numbers graphically. In different types of diagrams. In addition, you can change the language between German and English (the countries are not translated yet) and switch between Countries and States.
 
+![Bild_Projekt](https://user-images.githubusercontent.com/72971697/113402753-d5283100-93a5-11eb-8768-dce8b0bdb141.png)
