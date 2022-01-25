@@ -11,7 +11,7 @@ https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-welt
 ## Why did I start the project?
 In our studies, we were supposed to find a project for the subject of application programming. Since I spend almost every day on the page of the "Morgenpost" to look at the current case numbers, I thought that I would also like to build something like that, simplified. With this project, I wanted to expand my acquired knowledge in Java. Personally, I think that tools like version control or build management tools are standard. Because we don't get taught this in our studies, I wanted to integrate these things into my study project. In addition, I dealt with object programming and was able to implement this in my programme. After I had handed in the project, I wanted to continue working on the topic. This is the result.
 
-##Fundaments:
+## Fundaments:
 The data comes from the page via HTTP request and is stored in a JSON file and processed further. Through object programming, each country receives its own properties that are later accessed. This made it relatively easy for me to process the data in a diagram. 
 
 ## General information:
