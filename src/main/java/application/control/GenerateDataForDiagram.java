@@ -8,10 +8,11 @@ import javafx.scene.chart.XYChart.Series;
 public class GenerateDataForDiagram {
 
 	/**
-	 * @author Christian Wollmann <br/> <br/>
-	 * Function for creating the data to be displayed in the diagram
-	 * @param name - legend entry
-	 * @param day - the respective day in the month
+	 * @author Christian Wollmann <br/>
+	 *         <br/>
+	 *         Function for creating the data to be displayed in the diagram
+	 * @param name   - legend entry
+	 * @param day    - the respective day in the month
 	 * @param number - numerical value for the respective day
 	 * @return
 	 */

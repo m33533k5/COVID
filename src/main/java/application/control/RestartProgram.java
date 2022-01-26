@@ -8,13 +8,17 @@ import java.util.List;
 public class RestartProgram {
 
 	/**
-	 * Sun property pointing the main class and its arguments. Might not be defined
-	 * on non Hotspot VM implementations.
+	 * @author Christian Wollmann <br/>
+	 *         <br/>
+	 *         Sun property pointing the main class and its arguments. Might not be
+	 *         defined on non Hotspot VM implementations.
 	 */
 	public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	/**
-	 * Restart the current Java application
+	 * @author Christian Wollmann <br/>
+	 *         <br/>
+	 *         Restart the current Java application
 	 * 
 	 * @param runBeforeRestart some custom code to be run before restarting
 	 * @throws IOException

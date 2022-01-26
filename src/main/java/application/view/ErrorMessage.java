@@ -1,4 +1,5 @@
 package application.view;
+
 import application.control.Translation;
 
 import javafx.scene.control.Alert;
@@ -6,17 +7,17 @@ import javafx.scene.control.Alert.AlertType;
 
 /**
  * 
- * @author Christian Wollmann
- * Class to output an error message that can be accessed by other classes.
+ * @author Christian Wollmann Class to output an error message that can be
+ *         accessed by other classes.
  */
 
 public abstract interface ErrorMessage {
-	
+
 	public static void errorMessage(EnumErrorMessages errorType) {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle(Translation.get("error.set.title"));
 		alert.setHeaderText(Translation.get("error.set.header"));
-		switch(errorType) {
+		switch (errorType) {
 		case ERROR_LAND:
 			alert.setContentText(Translation.get("error.land.notFound"));
 			break;
@@ -42,5 +43,5 @@ public abstract interface ErrorMessage {
 
 		alert.showAndWait();
 	}
-	
+
 }

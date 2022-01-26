@@ -49,7 +49,7 @@ public class Main extends Application implements ErrorMessage {
 	private int year;
 	private String nameCountries;
 	private String nameMonth;
-
+	
 	// Call the class to access the objects / methods.
 	RequestData rd = new RequestData();
 	GenerateDataForDiagram gdfd = new GenerateDataForDiagram();
